@@ -35,6 +35,15 @@ export default function SessionsLayout() {
             name="index" 
             options ={{ 
               title: "Study Sessions", 
+              headerTintColor: '#007AFF',
+              }}
+          />
+          <Stack.Screen
+            name="create"
+            options={{
+              headerTitle: 'Create New Session', // Hide title on the new page
+              headerBackTitleVisible: false, // Hide back button text (iOS only)
+              headerTintColor: '#007AFF',
               }}
           />
         </Stack>

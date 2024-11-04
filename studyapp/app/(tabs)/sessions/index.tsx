@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { useState, useEffect, SetStateAction } from 'react';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import { Link } from "expo-router";
 import { Select, SelectTrigger, SelectInput, SelectIcon, SelectPortal,
   SelectBackdrop,
   SelectContent,
@@ -17,10 +18,12 @@ export default function SessionsScreen() {
   return(
     <View style={styles.container}>
       <ScrollView>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 15, top: 15 }}>
-        <TouchableOpacity style={styles.createButton}>
-          <Text style={styles.createButtonText}>Create Session</Text>
-        </TouchableOpacity>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 25, top: 20 }}>
+        <Link href="/sessions/create" asChild>
+          <TouchableOpacity style={styles.createButton}>
+            <Text style={styles.createButtonText}>Create Session</Text>
+          </TouchableOpacity>
+        </Link>
         <Select>
           <SelectTrigger variant="outline" size="md" >
             <SelectInput placeholder="Monthly" />
@@ -32,21 +35,9 @@ export default function SessionsScreen() {
               <SelectDragIndicatorWrapper>
                 <SelectDragIndicator />
               </SelectDragIndicatorWrapper>
-              <SelectItem label="UX Research" value="ux" />
-              <SelectItem label="Web Development" value="web" />
-              <SelectItem
-                label="Cross Platform Development Process"
-                value="Cross Platform Development Process"
-              />
-              <SelectItem
-                label="UI Designing"
-                value="ui"
-                isDisabled={true}
-              />
-              <SelectItem
-                label="Backend Development"
-                value="backend"
-              />
+              <SelectItem label="Monthly" value="monthly" />
+              <SelectItem label="Weekly" value="weekly" />
+              <SelectItem label="Today" value="today" />
             </SelectContent>
           </SelectPortal>
         </Select>
