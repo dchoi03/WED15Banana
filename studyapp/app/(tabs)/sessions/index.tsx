@@ -10,6 +10,7 @@ import { Select, SelectTrigger, SelectInput, SelectIcon, SelectPortal,
   SelectItem,
 } from "@/components/ui/select"
 import { ChevronDownIcon } from "@/components/ui/icon";
+import { Button, ButtonText } from "@/components/ui/button";
 
 export default function SessionsScreen() {
 
