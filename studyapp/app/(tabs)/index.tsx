@@ -1,70 +1,132 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Image, StyleSheet, View, ScrollView } from "react-native";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
+import { useState } from "react";
+import { ButtonIcon, ButtonText, Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Plus, X } from 'lucide-react-native';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 
 export default function HomeScreen() {
+  const [isGeorge, setIsGeorge] = useState(false);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <ScrollView
+      style={styles.scrollView}
+      contentContainerStyle={styles.container}
+    >
+      <Heading style={{ color: "#007AFF" }} size={"xl"}>
+        Buddy Finder
+      </Heading>
+      <View style={styles.personCard}>
+        {/* Profile picture */}
+        {isGeorge ? (
+          <Image
+            style={styles.personImage}
+            source={require("../../assets/images/people/george.png")}
+          />
+        ) : (
+          <Image
+            style={styles.personImage}
+            source={require("../../assets/images/people/ava.png")}
+          />
+        )}
+        {/* Personal information */}
+        {isGeorge ? (
+          <View style={styles.personalInfo}>
+            <View style={styles.peronHeading}>
+              <Text
+                style={[styles.textColor, { fontWeight: 500 }]}
+                size={"2xl"}
+              >
+                George
+              </Text>
+              <Text style={[styles.textColor, { fontWeight: 300 }]} size={"lg"}>
+                1st Year
+              </Text>
+            </View>
+            <Text style={styles.textColor} size={"md"}>
+              Commerce
+            </Text>
+          </View>
+        ) : (
+          <View style={styles.personalInfo}>
+            <View style={styles.peronHeading}>
+              <Text
+                style={[styles.textColor, { fontWeight: 500 }]}
+                size={"2xl"}
+              >
+                Ava
+              </Text>
+              <Text style={[styles.textColor, { fontWeight: 300 }]} size={"lg"}>
+                5th Year
+              </Text>
+            </View>
+            <Text style={styles.textColor} size={"md"}>
+              Finance & Computer Science
+            </Text>
+          </View>
+        )}
+      </View>
+      <View style={styles.buttons}>
+        <Button action="negative" variant="outline" size="xl">
+          <ButtonIcon />
+          <ButtonText>Skip</ButtonText>
+        </Button>
+        <Button action="positive" variant="solid" size="xl">
+          <ButtonIcon />
+          <ButtonText>Add</ButtonText>
+        </Button>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  container: {
+    flexGrow: 1,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    paddingTop: 60,
+    paddingHorizontal: 16,
+    gap: 48,
+  },
+  scrollView: {
+    flexGrow: 1,
+    backgroundColor: "white",
+  },
+  personCard: {
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    gap: 12,
+  },
+  personProfile: {
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
     gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  personImage: {
+    borderRadius: 12,
+    width: 370,
+    height: 300,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  personalInfo: {
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    gap: 2,
+  },
+  peronHeading: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  traitBadges: {},
+  buttons: {},
+  textColor: {
+    color: "#05405D",
   },
 });
