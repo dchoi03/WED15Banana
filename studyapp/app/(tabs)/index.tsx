@@ -3,9 +3,16 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { useState } from "react";
 import { ButtonIcon, ButtonText, Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Plus, X } from 'lucide-react-native';
-
+import { Badge, BadgeText, BadgeIcon } from "@/components/ui/badge";
+import {
+  Plus,
+  X,
+  GraduationCap,
+  Clock,
+  Check,
+  Star,
+} from "lucide-react-native";
+import { Alert, AlertIcon, AlertText } from "@/components/ui/alert";
 
 export default function HomeScreen() {
   const [isGeorge, setIsGeorge] = useState(false);
@@ -67,14 +74,53 @@ export default function HomeScreen() {
             </Text>
           </View>
         )}
+        {/* Personal badges */}
+        {isGeorge ? (
+          <View style={styles.traitBadges}>
+            <Badge action="info" size="lg" variant="solid" style={styles.badge}>
+              <BadgeIcon color="#05405D" size="lg" as={GraduationCap} />
+              <BadgeText style={styles.textColor}>Same university</BadgeText>
+            </Badge>
+            <Badge action="info" size="lg" variant="solid" style={styles.badge}>
+              <BadgeIcon color="#05405D" size="lg" as={Check} />
+              <BadgeText style={styles.textColor}>Took COMM099</BadgeText>
+            </Badge>
+          </View>
+        ) : (
+          <View style={styles.traitBadges}>
+            <Badge action="info" size="lg" variant="solid" style={styles.badge}>
+              <BadgeIcon color="#05405D" size="lg" as={GraduationCap} />
+              <BadgeText style={styles.textColor}>Same university</BadgeText>
+            </Badge>
+            <Badge action="info" size="lg" variant="solid" style={styles.badge}>
+              <BadgeIcon color="#05405D" size="lg" as={Clock} />
+              <BadgeText style={styles.textColor}>Matching timetables</BadgeText>
+            </Badge>
+            <Badge action="info" size="lg" variant="solid" style={styles.badge}>
+              <BadgeIcon color="#05405D" size="lg" as={Check} />
+              <BadgeText style={styles.textColor}>Taking COMP4511</BadgeText>
+            </Badge>
+            <Badge action="info" size="lg" variant="solid" style={styles.badge}>
+              <BadgeIcon color="#05405D" size="lg" as={Star} />
+              <BadgeText style={styles.textColor}>Similar study goals</BadgeText>
+            </Badge>
+          </View>
+        )}
       </View>
+      {/* Buttons */}
       <View style={styles.buttons}>
-        <Button action="negative" variant="outline" size="xl">
-          <ButtonIcon />
-          <ButtonText>Skip</ButtonText>
+        <Button action="negative" variant="outline" size="xl" onPress={() => setIsGeorge(true)}>
+          <ButtonIcon size="lg" as={X} />
+          <ButtonText style={{ color: "#E63535" }}>Skip</ButtonText>
         </Button>
-        <Button action="positive" variant="solid" size="xl">
-          <ButtonIcon />
+        <Button
+          style={{ backgroundColor: "#007AFF" }}
+          action="positive"
+          variant="solid"
+          size="xl"
+          onPress={() => setIsGeorge(true)}
+        >
+          <ButtonIcon size="lg" as={Plus} />
           <ButtonText>Add</ButtonText>
         </Button>
       </View>
@@ -114,7 +160,6 @@ const styles = StyleSheet.create({
     height: 300,
   },
   personalInfo: {
-    flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
     gap: 2,
@@ -124,9 +169,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
   },
-  traitBadges: {},
-  buttons: {},
+  traitBadges: {
+    justifyContent: "flex-start",
+    gap: 8,
+    height: 140,
+  },
+  buttons: {
+    flexDirection: "row",
+    width: 370,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   textColor: {
     color: "#05405D",
+  },
+  badge: {
+    gap: 8,
+    color: "#075A83",
+    backgroundColor: "#EBF8FE",
+    width: 250,
+    paddingHorizontal: 8,
+    paddingTop: 4,
   },
 });
