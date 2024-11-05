@@ -11,17 +11,22 @@ import {
   Clock,
   Check,
   Star,
+  CircleCheck,
 } from "lucide-react-native";
 import { Alert, AlertIcon, AlertText } from "@/components/ui/alert";
+import { VStack } from "@/components/ui/vstack";
+import { HStack } from "@/components/ui/hstack";
 
 export default function HomeScreen() {
   const [isGeorge, setIsGeorge] = useState(false);
+  const [isAdd, setIsAdd] = useState(false);
 
   return (
     <ScrollView
       style={styles.scrollView}
       contentContainerStyle={styles.container}
     >
+      
       <Heading style={{ color: "#007AFF" }} size={"xl"}>
         Buddy Finder
       </Heading>
@@ -94,7 +99,9 @@ export default function HomeScreen() {
             </Badge>
             <Badge action="info" size="lg" variant="solid" style={styles.badge}>
               <BadgeIcon color="#05405D" size="lg" as={Clock} />
-              <BadgeText style={styles.textColor}>Matching timetables</BadgeText>
+              <BadgeText style={styles.textColor}>
+                Matching timetables
+              </BadgeText>
             </Badge>
             <Badge action="info" size="lg" variant="solid" style={styles.badge}>
               <BadgeIcon color="#05405D" size="lg" as={Check} />
@@ -102,14 +109,21 @@ export default function HomeScreen() {
             </Badge>
             <Badge action="info" size="lg" variant="solid" style={styles.badge}>
               <BadgeIcon color="#05405D" size="lg" as={Star} />
-              <BadgeText style={styles.textColor}>Similar study goals</BadgeText>
+              <BadgeText style={styles.textColor}>
+                Similar study goals
+              </BadgeText>
             </Badge>
           </View>
         )}
       </View>
       {/* Buttons */}
       <View style={styles.buttons}>
-        <Button action="negative" variant="outline" size="xl" onPress={() => setIsGeorge(true)}>
+        <Button
+          action="negative"
+          variant="outline"
+          size="xl"
+          onPress={() => setIsGeorge(true)}
+        >
           <ButtonIcon size="lg" as={X} />
           <ButtonText style={{ color: "#E63535" }}>Skip</ButtonText>
         </Button>
@@ -118,12 +132,23 @@ export default function HomeScreen() {
           action="positive"
           variant="solid"
           size="xl"
-          onPress={() => setIsGeorge(true)}
+          onPress={() => {setIsGeorge(true); setIsAdd(true)}}
         >
           <ButtonIcon size="lg" as={Plus} />
           <ButtonText>Add</ButtonText>
         </Button>
       </View>
+      {isAdd && (
+        <Alert style={{position: 'absolute', marginTop: 40}} action="success" variant="solid">
+          <AlertIcon style={{alignSelf: 'flex-start'}} as={CircleCheck} className="mt-1" />
+          <HStack className="justify-between flex-1 items-center gap-1 sm:gap-8">
+            <VStack className="flex-1">
+              <Text style={{color: '#166534', fontWeight: 600, fontSize: 16}}>Success</Text>
+              <AlertText style={{color: 'black'}}>Buddy request sent to Ada!</AlertText>
+            </VStack>
+          </HStack>
+        </Alert>
+      )}
     </ScrollView>
   );
 }
