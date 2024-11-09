@@ -2,7 +2,7 @@ import { Image, StyleSheet, Platform, Text, View } from 'react-native';
 import { FlatList } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { configureLayoutAnimationBatch } from 'react-native-reanimated/lib/typescript/reanimated2/core';
+import { useNavigation } from '@react-navigation/native';
 import {
   Button,
   ButtonText,
@@ -18,11 +18,13 @@ import {
 } from "@/components/ui/avatar"
 import { useState } from 'react';
 
-export default function HomeScreen() {
 
+export default function ProfilePage() {
   const[details, setDetails] = useState([ { id: '1', title: "name: ", content: "daf" },
     { id: '2', title: "education: ", content: "sadf" },])
 
+
+  const navigation = useNavigation();
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.padder}/>
@@ -36,9 +38,9 @@ export default function HomeScreen() {
         <ThemedText>bio</ThemedText>
         <ThemedView>
         <ButtonGroup >
-          <Button style={styles.button}>
+          <Button style={styles.button} action="primary" onPress={() => {}}>
           <ButtonText>Buddies</ButtonText>
-          </Button>
+          </Button >
           <Button style={styles.button}>
           <ButtonText>Edit Profile</ButtonText>
           </Button>
@@ -61,6 +63,7 @@ export default function HomeScreen() {
     </ThemedView>
   );
 }
+
 
 const styles = StyleSheet.create({
   titleContainer: {
