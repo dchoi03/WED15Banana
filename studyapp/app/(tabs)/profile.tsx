@@ -1,18 +1,62 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { Image, StyleSheet, Platform, Text, View } from 'react-native';
+import { FlatList } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { configureLayoutAnimationBatch } from 'react-native-reanimated/lib/typescript/reanimated2/core';
+import {
+  Button,
+  ButtonText,
+  ButtonSpinner,
+  ButtonIcon,
+  ButtonGroup,
+} from "@/components/ui/button"
+import {
+  Avatar,
+  AvatarBadge,
+  AvatarFallbackText,
+  AvatarImage,
+} from "@/components/ui/avatar"
+import { useState } from 'react';
 
 export default function HomeScreen() {
+
+  const[details, setDetails] = useState([ { id: '1', title: "name: ", content: "daf" },
+    { id: '2', title: "education: ", content: "sadf" },])
+
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.padder}/>
         <ThemedView style={styles.subContainer}>
-        <ThemedText>Profile</ThemedText>
-        <ThemedText></ThemedText>
+        <ThemedText style={styles.yourProfile}>Your Profile</ThemedText>
+          <Avatar size="2xl">
+            <AvatarFallbackText />
+            <AvatarImage />
+          </Avatar>
+        <ThemedText style={styles.nameText}>JohnSmilth</ThemedText>
+        <ThemedText>bio</ThemedText>
+        <ThemedView>
+        <ButtonGroup >
+          <Button style={styles.button}>
+          <ButtonText>Buddies</ButtonText>
+          </Button>
+          <Button style={styles.button}>
+          <ButtonText>Edit Profile</ButtonText>
+          </Button>
+        </ButtonGroup>
+        <ThemedView style={styles.detailsContainer}>
+          <ThemedText style={styles.nameText}>Your Details</ThemedText>
+          <FlatList
+            data={details}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.listItem}>
+              <Text style={styles.listTitle}>{item.title}</Text>
+              <Text>{item.content}</Text>
+              </View>
+            )}
+          />
+        </ThemedView>
+        </ThemedView>
         </ThemedView>
     </ThemedView>
   );
@@ -24,9 +68,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  detailsContainer: {
+    flex: 1,
+    alignItems: 'center',
+    paddingTop: 30
   },
   reactLogo: {
     height: 178,
@@ -46,5 +91,29 @@ const styles = StyleSheet.create({
   }, 
   subContainer: {
     flex: 1,
+    alignItems: "center",
+  },
+  yourProfile: {
+    fontFamily: "roboto",
+    fontSize: 20,
+    color: "#007AFF",
+    fontWeight: "bold",
+    paddingBottom: 30,
+  }, 
+  nameText: {
+    fontWeight: "bold" 
+  },
+  button: {
+    backgroundColor: "#007AFF",
+    color: "#007AFF",
+  },
+  listItem: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "flex-start"
+  },
+  listTitle: {
+    fontWeight: "bold",
   }
 });
