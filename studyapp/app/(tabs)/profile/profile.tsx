@@ -3,6 +3,7 @@ import { FlatList } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack'
 import {
   Button,
   ButtonText,
@@ -23,7 +24,6 @@ export default function ProfilePage() {
   const[details, setDetails] = useState([ { id: '1', title: "name: ", content: "daf" },
     { id: '2', title: "education: ", content: "sadf" },])
 
-
   const navigation = useNavigation();
   return (
     <ThemedView style={styles.container}>
@@ -38,7 +38,7 @@ export default function ProfilePage() {
         <ThemedText>bio</ThemedText>
         <ThemedView>
         <ButtonGroup >
-          <Button style={styles.button} action="primary" onPress={() => {}}>
+          <Button style={styles.button} action="primary" onPress={() => {navigation.navigate('editProfile')}}>
           <ButtonText>Buddies</ButtonText>
           </Button >
           <Button style={styles.button}>

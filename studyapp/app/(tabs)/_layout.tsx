@@ -4,6 +4,7 @@ import React from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { profilePageStacker } from './profile/_Layout';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -42,5 +43,6 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+
   );
 }
