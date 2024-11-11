@@ -1,5 +1,4 @@
 import { Image, StyleSheet, Platform, Text, View } from 'react-native';
-import { FlatList } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {
@@ -129,7 +128,7 @@ return (
 
 
             <ButtonGroup >
-              <Button style={styles.button} onPress={()=>{navigation.navigate('index')}}>
+              <Button style={styles.button}>
               <ButtonText>Save Changes</ButtonText>
               </Button>
             </ButtonGroup>

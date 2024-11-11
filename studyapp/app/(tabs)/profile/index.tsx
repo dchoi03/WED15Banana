@@ -1,9 +1,7 @@
-import { Image, StyleSheet, Platform, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { FlatList } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { useNavigation } from 'expo-router';
-import { StackNavigationProp } from '@react-navigation/stack'
 import {
   Button,
   ButtonText,
@@ -17,12 +15,20 @@ import {
   AvatarFallbackText,
   AvatarImage,
 } from "@/components/ui/avatar"
+import { useNavigation, Link } from 'expo-router';
 import { useState } from 'react';
 
 
 export default function ProfilePage() {
   const[details, setDetails] = useState([ { id: '1', title: "name: ", content: "daf" },
-    { id: '2', title: "education: ", content: "sadf" },])
+                                          { id: '2', title: "education: ", content: "sadf" },
+                                          { id: '3', title: "University: ", content: "UNSW" },
+                                          { id: '4', title: "Grade: ", content: "3rd Year"} ,
+                                          { id: '5', title: "Current Courses: ", content: "default" },
+                                          { id: '6', title: "Goals: ", content: "Find friends make enemies" },
+                                          { id: '7', title: "Contact: ", content: "000 0000 0000" },
+                                          { id: '8', title: "Email: ", content: "Fiaoesfe@gasem.com" }
+                                          ])
 
   const navigation = useNavigation();
   return (
@@ -36,12 +42,11 @@ export default function ProfilePage() {
           </Avatar>
         <ThemedText style={styles.nameText}>JohnSmilth</ThemedText>
         <ThemedText>bio</ThemedText>
-        <ThemedView>
         <ButtonGroup >
           <Button style={styles.button} action="primary" >
           <ButtonText>Buddies</ButtonText>
           </Button >
-          <Button style={styles.button} onPress={()=>{navigation.navigate('editProfile')}}>
+          <Button style={styles.button}>
           <ButtonText>Edit Profile</ButtonText>
           </Button>
         </ButtonGroup>
@@ -59,7 +64,6 @@ export default function ProfilePage() {
           />
         </ThemedView>
         </ThemedView>
-        </ThemedView>
     </ThemedView>
   );
 }
@@ -74,7 +78,8 @@ const styles = StyleSheet.create({
   detailsContainer: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 30
+    paddingTop: 30,
+    width: 350,
   },
   reactLogo: {
     height: 178,
@@ -104,7 +109,8 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   }, 
   nameText: {
-    fontWeight: "bold" 
+    fontWeight: "bold", 
+    paddingBottom: 20
   },
   button: {
     backgroundColor: "#007AFF",
@@ -113,10 +119,13 @@ const styles = StyleSheet.create({
   listItem: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "space-evenly",
-    alignItems: "flex-start"
+    justifyContent: "flex-start",
+    alignContent: "space-evenly",
+    alignSelf: "stretch"
   },
   listTitle: {
+    width: 100,
     fontWeight: "bold",
+    paddingBottom: 10,
   }
 });
