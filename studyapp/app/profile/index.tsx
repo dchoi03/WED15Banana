@@ -2,7 +2,7 @@ import { Image, StyleSheet, Platform, Text, View } from 'react-native';
 import { FlatList } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack'
 import {
   Button,
@@ -38,10 +38,10 @@ export default function ProfilePage() {
         <ThemedText>bio</ThemedText>
         <ThemedView>
         <ButtonGroup >
-          <Button style={styles.button} action="primary" onPress={() => {navigation.navigate('editProfile')}}>
+          <Button style={styles.button} action="primary" >
           <ButtonText>Buddies</ButtonText>
           </Button >
-          <Button style={styles.button}>
+          <Button style={styles.button} onPress={()=>{navigation.navigate('editProfile')}}>
           <ButtonText>Edit Profile</ButtonText>
           </Button>
         </ButtonGroup>

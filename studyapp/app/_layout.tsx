@@ -2,15 +2,11 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
-import profile from './(tabs)/profile/profile'
-import editProfile from './(tabs)/profile/editProfile';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -41,16 +37,6 @@ export default function RootLayout() {
           <Stack.Screen name="+not-found" />
         </Stack>
       </ThemeProvider>
-      
-      
-      <NavigationContainer>
-            <Stack.Navigator initialRouteName="ProfilePage">
-              <Stack.Screen name="ProfilePage" component={profile} />
-              <Stack.Screen name="EditProfile" component={editProfile} />
-            </Stack.Navigator>
-          </NavigationContainer>
-      
-      
       
       </GluestackUIProvider>
      
