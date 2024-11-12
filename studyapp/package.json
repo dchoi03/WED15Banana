@@ -18,8 +18,8 @@
   "dependencies": {
     "@expo/html-elements": "^0.4.2",
     "@expo/vector-icons": "^14.0.2",
-    "@gluestack-ui/alert": "^0.1.15",
     "@gluestack-ui/actionsheet": "^0.2.45",
+    "@gluestack-ui/alert": "^0.1.15",
     "@gluestack-ui/button": "^1.0.7",
     "@gluestack-ui/icon": "^0.1.22",
     "@gluestack-ui/input": "^0.1.31",
@@ -40,6 +40,7 @@
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
     "expo-web-browser": "~13.0.3",
+    "lucide": "^0.456.0",
     "lucide-react": "^0.263.1",
     "lucide-react-native": "^0.454.0",
     "nativewind": "^4.0.36",
