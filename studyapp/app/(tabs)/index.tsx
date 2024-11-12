@@ -29,7 +29,7 @@ export default function HomeScreen() {
     >
       
       <Heading style={{ color: "#007AFF" }} size={"xl"}>
-        Buddy Finder
+        Buddy Matcher
       </Heading>
       <View style={styles.personCard}>
         {/* Profile picture */}

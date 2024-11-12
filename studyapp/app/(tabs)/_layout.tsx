@@ -5,7 +5,7 @@ import Feather from '@expo/vector-icons/Feather';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { House, Search } from "lucide-react-native";
+import { Users, Search } from "lucide-react-native";
 
 
 
@@ -22,9 +22,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: 'Matcher',
           tabBarIcon: ({ color, focused }) => (
-            <House color={color} />
+            <Users color={color} />
           ),
         }}
       />

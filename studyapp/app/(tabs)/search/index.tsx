@@ -1,5 +1,5 @@
 import { Image, StyleSheet, View, ScrollView } from "react-native";
-import { Text } from "@/components/ui/text";
+
 import { useState } from "react";
 import { ButtonIcon, ButtonText, Button } from "@/components/ui/button";
 import { Input, InputField, InputSlot, InputIcon } from "@/components/ui/input";
@@ -20,7 +20,7 @@ export default function HomeScreen() {
         <InputSlot>
           <InputIcon size={24} as={Search} />
         </InputSlot>
-        <InputField onChangeText={(text) => setSearchText(text)} value={searchText}  type="text" placeholder="Search study buddies..." />
+        <InputField onChangeText={(text) => setSearchText(text)} value={searchText} type="text" placeholder="Search study buddies..." />
         <InputSlot>
           <InputIcon size={24} as={Mic} />
         </InputSlot>
