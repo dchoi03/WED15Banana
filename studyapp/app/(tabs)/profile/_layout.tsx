@@ -11,6 +11,10 @@ export default function ProfileLayout() {
                 title: "Edit Profile", 
                 headerTintColor: '#007AFF',
                 }}/>
+         <Stack.Screen name="buddyList"  options ={{ 
+                title: "Buddy List", 
+                headerTintColor: '#007AFF',
+                }}/>       
       </Stack>
   );
 }
