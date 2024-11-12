@@ -46,7 +46,7 @@ export default function ProfilePage() {
           <Button style={styles.button} action="primary" >
           <ButtonText>Buddies</ButtonText>
           </Button >
-          <Button style={styles.button}>
+          <Button style={styles.button} onPress={() => navigation.navigate('editProfile' as never)}>
           <ButtonText>Edit Profile</ButtonText>
           </Button>
         </ButtonGroup>
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   padder: {
-    height: 80,
+    height: 40,
     backgroundColor: "light-blue"
   }, 
   subContainer: {

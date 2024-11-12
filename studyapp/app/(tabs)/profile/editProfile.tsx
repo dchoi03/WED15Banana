@@ -17,7 +17,7 @@ import {
 import { useState } from 'react';
 import { useNavigation } from 'expo-router';
 import { Input, InputField  } from "@/components/ui/input"
-
+import { Textarea, TextareaInput } from "@/components/ui/textarea"
 
 export default function EditProfilePage() {
   const navigation = useNavigation();
@@ -26,25 +26,33 @@ return (
           <ThemedView style={styles.padder}/>
             <ThemedView style={styles.subContainer}>
               <ThemedText style={styles.yourProfile}>Edit Your Profile</ThemedText>
-              
-                <Avatar size="2xl">
+            
+              <ThemedView style={styles.profileBox}>
+                 <Avatar size="xl">
                   <AvatarFallbackText />
                   <AvatarImage />
                 </Avatar>
+                <ThemedText>Add/Edit your Profile</ThemedText>
+                </ThemedView>
+            
 
-            <ThemedView>
+
             <ThemedView>
               <ThemedText>bio</ThemedText>
-
+              <Textarea
+                size="md"
+              >
+                <TextareaInput placeholder="Your text goes here..." />
+              </Textarea>
             </ThemedView>   
 
-
+            <ThemedView>
             <ThemedView style={styles.detailsContainer}>
               <ThemedText style={styles.nameText}>Your Details</ThemedText>
-
             </ThemedView>
 
-              <ThemedView>
+
+              <ThemedView style={styles.listItem}>
               <ThemedText style={styles.nameText}>Name</ThemedText>
               <Input
                 variant="outline"
@@ -146,9 +154,8 @@ const styles = StyleSheet.create({
       gap: 8,
     },
     detailsContainer: {
-      flex: 1,
       alignItems: 'center',
-      paddingTop: 30
+      height: 40,
     },
     reactLogo: {
       height: 178,
@@ -163,7 +170,7 @@ const styles = StyleSheet.create({
       justifyContent: "flex-start",
     },
     padder: {
-      height: 80,
+      height: 20,
       backgroundColor: "light-blue"
     }, 
     subContainer: {
@@ -171,7 +178,6 @@ const styles = StyleSheet.create({
       alignItems: "center",
     },
     yourProfile: {
-      fontFamily: "roboto",
       fontSize: 20,
       color: "#007AFF",
       fontWeight: "bold",
@@ -185,12 +191,17 @@ const styles = StyleSheet.create({
       color: "#007AFF",
     },
     listItem: {
-      flex: 1,
       flexDirection: "row",
-      justifyContent: "space-evenly",
-      alignItems: "flex-start"
+      width: 250,
     },
     listTitle: {
       fontWeight: "bold",
+    },
+    listInput: {
+      height: 20
+    }, 
+    profileBox: {
+      flex:1, 
+      flexDirection: "row"
     }
   });
