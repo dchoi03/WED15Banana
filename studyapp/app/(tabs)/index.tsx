@@ -1,3 +1,4 @@
+
 import { Image, StyleSheet, View, ScrollView } from "react-native";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
@@ -217,3 +218,4 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
 });
+
