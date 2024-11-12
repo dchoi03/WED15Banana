@@ -98,10 +98,8 @@ export default function CreateSessionScreen() {
           )}
         </View>
         </VStack>
-
       </View>
       
-
       <View style={styles.inputContainer}>
         <VStack space="md">
           <Text style={styles.label}>Location</Text>
