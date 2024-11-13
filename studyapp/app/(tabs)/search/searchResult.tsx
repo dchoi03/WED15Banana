@@ -90,7 +90,7 @@ export default function SearchResults(prop: props) {
   );
 
   return (
-    <View style={{ gap: 10, alignItems: "center", paddingVertical: 12 }}>
+    <View style={{ gap: 8, alignItems: "center", paddingVertical: 12 }}>
       {/* Filter by student name */}
       {filteredStudents.length == 0 ? (
         <Text numberOfLines={1} style={{ width: 300, textAlign: "center" }}>
