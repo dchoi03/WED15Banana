@@ -11,11 +11,7 @@ import {
   Clock,
   Check,
   Star,
-  CircleCheck,
 } from "lucide-react-native";
-import { Alert, AlertIcon, AlertText } from "@/components/ui/alert";
-import { VStack } from "@/components/ui/vstack";
-import { HStack } from "@/components/ui/hstack";
 import Toast from "react-native-toast-message";
 
 const sampleStudents = [

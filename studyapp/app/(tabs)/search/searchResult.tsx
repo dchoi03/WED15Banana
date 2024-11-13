@@ -1,7 +1,6 @@
-import { Heading } from "@/components/ui/heading";
 import { Image, StyleSheet, View } from "react-native";
 import { Text } from "@/components/ui/text";
-import { Plus } from "lucide-react-native";
+import StudentResult from "./studentResult";
 
 // Sorted list of students by distance
 const sampleStudents = [
@@ -100,56 +99,7 @@ export default function SearchResults(prop: props) {
       ) : (
         <>
           {filteredStudents.map((student, index) => (
-            <View key={index} style={styles.studentContainer}>
-              <View style={styles.studentInfo}>
-                <Image
-                  source={{ uri: student.image }}
-                  style={styles.studentImage}
-                />
-                <View style={styles.studentText}>
-                  <View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 8,
-                      }}
-                    >
-                      <Text
-                        numberOfLines={1}
-                        size={"xl"}
-                        style={{ fontWeight: 600, color: "#05405D" }}
-                      >
-                        {student.name}
-                      </Text>
-                      <Text
-                        numberOfLines={1}
-                        size={"md"}
-                        style={{ fontWeight: 300, color: "#05405D" }}
-                      >
-                        {student.year}
-                      </Text>
-                    </View>
-                    <Text size={"md"} style={{ color: "#05405D", width: 180 }}>
-                      {student.degree}
-                    </Text>
-                  </View>
-                  <Text
-                    numberOfLines={1}
-                    size={"md"}
-                    style={{ color: "#05405D", width: 200 }}
-                  >
-                    {student.numMutals} mutal connections
-                  </Text>
-                </View>
-              </View>
-              <View style={{alignSelf: 'center'}}>
-                <Plus size={24} color={'#05405D'} />
-                <Text size={"md"} style={{ color: "#05405D" }}>
-                  Add
-                </Text>
-              </View>
-            </View>
+            <StudentResult student={student} index={index} />
           ))}
         </>
       )}
