@@ -90,18 +90,18 @@ export default function SearchResults(prop: props) {
   );
 
   return (
-    <View style={{ gap: 24, alignItems: "center", paddingBottom: 24 }}>
+    <View style={{ gap: 10, alignItems: "center", paddingVertical: 12 }}>
       {/* Filter by student name */}
       {filteredStudents.length == 0 ? (
         <Text numberOfLines={1} style={{ width: 300, textAlign: "center" }}>
           Nobody's name starts with "{searchText}"
         </Text>
       ) : (
-        <View style={{gap: 10, paddingVertical: 12}}>
+        <>
           {filteredStudents.map((student, index) => (
             <StudentResult key={index} student={student} />
           ))}
-        </View>
+        </>
       )}
     </View>
   );
