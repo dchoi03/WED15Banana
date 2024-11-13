@@ -3,7 +3,7 @@ import { Image, StyleSheet, View, ScrollView } from "react-native";
 import { useState } from "react";
 import { ButtonIcon, ButtonText, Button } from "@/components/ui/button";
 import { Input, InputField, InputSlot, InputIcon } from "@/components/ui/input";
-import { Search, Mic } from "lucide-react-native";
+import { Search, Mic, ArrowLeft } from "lucide-react-native";
 import Map from './map'
 import SearchResults from './search'
 

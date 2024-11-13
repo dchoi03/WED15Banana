@@ -1,16 +1,17 @@
 import { Heading } from "@/components/ui/heading";
 import { Image, StyleSheet, View } from "react-native";
 import { Text } from "@/components/ui/text";
+import { Plus } from "lucide-react-native";
 
 // Sorted list of students by distance
 const sampleStudents = [
   {
-    name: "George",
-    year: "1st Year",
-    degree: "Commerce",
-    numMutals: "5",
+    name: "Ava",
+    year: "5th Year",
+    degree: "Finance & Computer Science",
+    numMutals: "10",
     image: Image.resolveAssetSource(
-      require("../../../assets/images/people/george.png")
+      require("../../../assets/images/people/ava.png")
     ).uri,
   },
   {
@@ -19,7 +20,7 @@ const sampleStudents = [
     degree: "Commerce",
     numMutals: "0",
     image: Image.resolveAssetSource(
-      require("../../../assets/images/people/james.png")
+      require("../../../assets/images/people/george.png")
     ).uri,
   },
   {
@@ -93,7 +94,9 @@ export default function SearchResults(prop: props) {
     <View style={{ gap: 24, alignItems: "center", paddingBottom: 24 }}>
       {/* Filter by student name */}
       {filteredStudents.length == 0 ? (
-        <Text>Nobody's name stars with "{searchText}"</Text>
+        <Text numberOfLines={1} style={{ width: 300, textAlign: "center" }}>
+          Nobody's name stars with "{searchText}"
+        </Text>
       ) : (
         <>
           {filteredStudents.map((student, index) => (
@@ -140,12 +143,12 @@ export default function SearchResults(prop: props) {
                   </Text>
                 </View>
               </View>
-              <Text
-                size={"md"}
-                style={{ color: "#05405D", alignSelf: "center" }}
-              >
-                add
-              </Text>
+              <View style={{alignSelf: 'center'}}>
+                <Plus size={24} color={'#05405D'} />
+                <Text size={"md"} style={{ color: "#05405D" }}>
+                  Add
+                </Text>
+              </View>
             </View>
           ))}
         </>
