@@ -94,12 +94,12 @@ export default function SearchResults(prop: props) {
       {/* Filter by student name */}
       {filteredStudents.length == 0 ? (
         <Text numberOfLines={1} style={{ width: 300, textAlign: "center" }}>
-          Nobody's name stars with "{searchText}"
+          Nobody's name starts with "{searchText}"
         </Text>
       ) : (
         <>
           {filteredStudents.map((student, index) => (
-            <StudentResult student={student} index={index} />
+            <StudentResult key={index} student={student} />
           ))}
         </>
       )}
