@@ -1,70 +1,205 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Image, StyleSheet, View, ScrollView } from "react-native";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
+import { useState } from "react";
+import { ButtonIcon, ButtonText, Button } from "@/components/ui/button";
+import { Badge, BadgeText, BadgeIcon } from "@/components/ui/badge";
+import {
+  Plus,
+  X,
+  GraduationCap,
+  Clock,
+  Check,
+  Star,
+} from "lucide-react-native";
+import Toast from "react-native-toast-message";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+const sampleStudents = [
+  {
+    name: "Ava",
+    year: "5th Year",
+    degree: "Finance & Computer Science",
+    image: Image.resolveAssetSource(
+      require("../../assets/images/people/ava.png")
+    ).uri,
+    badges: [
+      { name: "Same university", icon: GraduationCap },
+      { name: "Matching timetables", icon: Clock },
+      { name: "Similar study goals", icon: Star },
+    ],
+  },
+  {
+    name: "George",
+    year: "1st Year",
+    degree: "Commerce",
+    image: Image.resolveAssetSource(
+      require("../../assets/images/people/george.png")
+    ).uri,
+    badges: [
+      { name: "Same university", icon: GraduationCap },
+      { name: "Too Comm099", icon: Check },
+    ],
+  },
+];
 
 export default function HomeScreen() {
+  const [studentNumber, setStudentNumber] = useState(0);
+  const MAXSTUDENTS = sampleStudents.length;
+
+  const sendRequest = (name: string) => {
+    Toast.show({
+      type: "success",
+      text1: "Success",
+      text2: "Buddy request sent to " + name + "!",
+    });
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <ScrollView
+      style={styles.scrollView}
+      contentContainerStyle={styles.container}
+    >
+      <Heading style={{ color: "#007AFF" }} size={"xl"}>
+        Buddy Matcher
+      </Heading>
+      {studentNumber >= MAXSTUDENTS ? (
+        <Text style={{width: 300, textAlign: 'center'}}>Check back in 1 hour for more student recommendations</Text>
+      ) : (
+        <View>
+          <View style={styles.personCard}>
+            {/* Profile picture */}
+            <Image
+              style={styles.personImage}
+              source={{ uri: sampleStudents[studentNumber].image }}
+            />
+            {/* Personal information */}
+            <View style={styles.personalInfo}>
+              <View style={styles.peronHeading}>
+                <Text
+                  style={[styles.textColor, { fontWeight: 500 }]}
+                  size={"2xl"}
+                >
+                  {sampleStudents[studentNumber].name}
+                </Text>
+                <Text
+                  style={[styles.textColor, { fontWeight: 300 }]}
+                  size={"lg"}
+                >
+                  {sampleStudents[studentNumber].year}
+                </Text>
+              </View>
+              <Text style={styles.textColor} size={"md"}>
+                {sampleStudents[studentNumber].degree}
+              </Text>
+            </View>
+            {/* Personal badges */}
+            <View style={styles.traitBadges}>
+              {sampleStudents[studentNumber].badges.map((badge, index) => (
+                <Badge
+                  action="info"
+                  size="lg"
+                  variant="solid"
+                  style={styles.badge}
+                  key={index}
+                >
+                  <BadgeIcon color="#05405D" size="lg" as={badge.icon} />
+                  <BadgeText style={styles.textColor}>{badge.name}</BadgeText>
+                </Badge>
+              ))}
+            </View>
+          </View>
+          {/* Buttons */}
+          <View style={styles.buttons}>
+            <Button
+              action="negative"
+              variant="outline"
+              size="xl"
+              onPress={() => setStudentNumber((current) => current + 1)}
+            >
+              <ButtonIcon size="lg" as={X} />
+              <ButtonText style={{ color: "#E63535" }}>Skip</ButtonText>
+            </Button>
+            <Button
+              style={{ backgroundColor: "#007AFF" }}
+              action="positive"
+              variant="solid"
+              size="xl"
+              onPress={() => {
+                setStudentNumber((current) => current + 1);
+                sendRequest(sampleStudents[studentNumber].name);
+              }}
+            >
+              <ButtonIcon size="lg" as={Plus} />
+              <ButtonText>Add</ButtonText>
+            </Button>
+          </View>
+        </View>
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  container: {
+    flexGrow: 1,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    paddingTop: 60,
+    paddingHorizontal: 16,
+    gap: 48,
+  },
+  scrollView: {
+    flexGrow: 1,
+    backgroundColor: "white",
+  },
+  personCard: {
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    gap: 12,
+  },
+  personProfile: {
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
     gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  personImage: {
+    borderRadius: 12,
+    width: 370,
+    height: 300,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  personalInfo: {
+    justifyContent: "flex-start",
+    alignItems: "center",
+    gap: 2,
+  },
+  peronHeading: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  traitBadges: {
+    justifyContent: "flex-start",
+    gap: 8,
+    height: 140,
+  },
+  buttons: {
+    flexDirection: "row",
+    width: 370,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  textColor: {
+    color: "#05405D",
+  },
+  badge: {
+    gap: 8,
+    color: "#075A83",
+    backgroundColor: "#EBF8FE",
+    width: 250,
+    paddingHorizontal: 8,
+    paddingTop: 4,
   },
 });
