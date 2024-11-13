@@ -97,11 +97,11 @@ export default function SearchResults(prop: props) {
           Nobody's name starts with "{searchText}"
         </Text>
       ) : (
-        <>
+        <View style={{gap: 10, paddingVertical: 12}}>
           {filteredStudents.map((student, index) => (
             <StudentResult key={index} student={student} />
           ))}
-        </>
+        </View>
       )}
     </View>
   );
