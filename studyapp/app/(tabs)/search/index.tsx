@@ -5,7 +5,7 @@ import { ButtonIcon, ButtonText, Button } from "@/components/ui/button";
 import { Input, InputField, InputSlot, InputIcon } from "@/components/ui/input";
 import { Search, Mic, ArrowLeft } from "lucide-react-native";
 import Map from './map'
-import SearchResults from './search'
+import SearchResults from './searchResult'
 
 export default function HomeScreen() {
 
