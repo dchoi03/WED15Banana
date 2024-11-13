@@ -5,10 +5,11 @@ import { ButtonIcon, ButtonText, Button } from "@/components/ui/button";
 import { Input, InputField, InputSlot, InputIcon } from "@/components/ui/input";
 import { Search, Mic } from "lucide-react-native";
 import Map from './map'
+import SearchResults from './search'
 
 export default function HomeScreen() {
 
-  const [searchText, setSearchText] = useState("")
+  const [searchText, setSearchText] = useState<string>("")
 
   return (
     <ScrollView
@@ -26,7 +27,7 @@ export default function HomeScreen() {
         </InputSlot>
       </Input>
       {/* Map or search results */}
-      <Map />
+      {searchText.length > 0 ? <SearchResults searchText={searchText} /> : <Map />}
     </ScrollView>
   );
 }
