@@ -1,5 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {
@@ -21,14 +20,14 @@ import { useState } from 'react';
 
 export default function ProfilePage() {
   const[details, setDetails] = useState([ { id: '1', title: "name: ", content: "daf" },
-                                          { id: '2', title: "education: ", content: "sadf" },
-                                          { id: '3', title: "University: ", content: "UNSW" },
-                                          { id: '4', title: "Grade: ", content: "3rd Year"} ,
-                                          { id: '5', title: "Current Courses: ", content: "default" },
-                                          { id: '6', title: "Goals: ", content: "Find friends make enemies" },
-                                          { id: '7', title: "Contact: ", content: "000 0000 0000" },
-                                          { id: '8', title: "Email: ", content: "Fiaoesfe@gasem.com" }
-                                          ])
+    { id: '2', title: "education: ", content: "sadf" },
+    { id: '3', title: "University: ", content: "UNSW" },
+    { id: '4', title: "Grade: ", content: "3rd Year"} ,
+    { id: '5', title: "Current Courses: ", content: "default" },
+    { id: '6', title: "Goals: ", content: "Find friends make enemies" },
+    { id: '7', title: "Contact: ", content: "000 0000 0000" },
+    { id: '8', title: "Email: ", content: "Fiaoesfe@gasem.com" }
+    ])
 
   const navigation = useNavigation();
   return (
@@ -38,12 +37,15 @@ export default function ProfilePage() {
         <ThemedText style={styles.yourProfile}>Your Profile</ThemedText>
           <Avatar size="2xl">
             <AvatarFallbackText />
-            <AvatarImage />
+            <AvatarImage     
+            source={{
+               uri: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg",
+            }}/>
           </Avatar>
         <ThemedText style={styles.nameText}>JohnSmilth</ThemedText>
-        <ThemedText>bio</ThemedText>
+        <ThemedText style={styles.bioText}>bio asdfjdshf ldshfaliu ehsfliudhls afudhlf asudhfliu adshflui alsdufhsldiuf haldiuf halsd</ThemedText>
         <ButtonGroup >
-          <Button style={styles.button} action="primary" >
+          <Button style={styles.button} action="primary" onPress={() => navigation.navigate('buddyList' as never)}>
           <ButtonText>Buddies</ButtonText>
           </Button >
           <Button style={styles.button} onPress={() => navigation.navigate('editProfile' as never)}>
@@ -127,5 +129,9 @@ const styles = StyleSheet.create({
     width: 100,
     fontWeight: "bold",
     paddingBottom: 10,
+  },
+  bioText: {
+    width: 250,
+    marginBottom: 20
   }
 });

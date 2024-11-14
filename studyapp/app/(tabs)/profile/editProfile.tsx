@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, Text, View } from 'react-native';
+import { Image, StyleSheet, Platform, Text, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {
@@ -22,10 +22,13 @@ import { Textarea, TextareaInput } from "@/components/ui/textarea"
 export default function EditProfilePage() {
   const navigation = useNavigation();
 return (
+  <ScrollView
+  style={styles.scrollView}
+  contentContainerStyle={styles.container}
+  >
         <ThemedView style={styles.container}>
           <ThemedView style={styles.padder}/>
             <ThemedView style={styles.subContainer}>
-              <ThemedText style={styles.yourProfile}>Edit Your Profile</ThemedText>
             
               <ThemedView style={styles.profileBox}>
                  <Avatar size="xl">
@@ -33,12 +36,10 @@ return (
                   <AvatarImage />
                 </Avatar>
                 <ThemedText>Add/Edit your Profile</ThemedText>
-                </ThemedView>
-            
+              </ThemedView>
 
-
-            <ThemedView>
-              <ThemedText>bio</ThemedText>
+            <ThemedView style={styles.bioBox}>
+              <ThemedText style={styles.detailsTitle}>Bio</ThemedText>
               <Textarea
                 size="md"
               >
@@ -46,15 +47,16 @@ return (
               </Textarea>
             </ThemedView>   
 
-            <ThemedView>
             <ThemedView style={styles.detailsContainer}>
-              <ThemedText style={styles.nameText}>Your Details</ThemedText>
+            <ThemedView style={styles.detailsTitleContainer}>
+              <ThemedText style={styles.detailsTitle}>Your Details</ThemedText>
             </ThemedView>
 
 
               <ThemedView style={styles.listItem}>
               <ThemedText style={styles.nameText}>Name</ThemedText>
               <Input
+                style={styles.listInput}
                 variant="outline"
                 size="md"
               >
@@ -62,9 +64,10 @@ return (
               </Input>
               </ThemedView>
 
-              <ThemedView>
+              <ThemedView style={styles.listItem}>
               <ThemedText style={styles.nameText}>Education</ThemedText>
               <Input
+                style={styles.listInput}
                 variant="outline"
                 size="md"
               >
@@ -72,9 +75,10 @@ return (
               </Input>
               </ThemedView>
 
-              <ThemedView>
+              <ThemedView style={styles.listItem}>
               <ThemedText style={styles.nameText}>University</ThemedText>
               <Input
+                style={styles.listInput}
                 variant="outline"
                 size="md"
               >
@@ -82,9 +86,10 @@ return (
               </Input>
               </ThemedView>
 
-              <ThemedView>
+              <ThemedView style={styles.listItem}>
               <ThemedText style={styles.nameText}>Grade</ThemedText>
               <Input
+                style={styles.listInput}
                 variant="outline"
                 size="md"
               >
@@ -92,9 +97,10 @@ return (
               </Input>
               </ThemedView>
 
-              <ThemedView>
+              <ThemedView style={styles.listItem}>
               <ThemedText style={styles.nameText}>Current Courses</ThemedText>
               <Input
+                style={styles.listInput}
                 variant="outline"
                 size="md"
               >
@@ -102,9 +108,10 @@ return (
               </Input>
               </ThemedView>
 
-              <ThemedView>
+              <ThemedView style={styles.listItem}>
               <ThemedText style={styles.nameText}>Goals</ThemedText>
               <Input
+                style={styles.listInput}
                 variant="outline"
                 size="md"
               >
@@ -112,9 +119,10 @@ return (
               </Input>
               </ThemedView>
 
-              <ThemedView>
+              <ThemedView style={styles.listItem}>
               <ThemedText style={styles.nameText}>Contact</ThemedText>
               <Input
+                style={styles.listInput}
                 variant="outline"
                 size="md"
               >
@@ -122,9 +130,10 @@ return (
               </Input>
               </ThemedView>
 
-              <ThemedView>
+              <ThemedView style={styles.listItem}>
               <ThemedText style={styles.nameText}>Email</ThemedText>
               <Input
+                style={styles.listInput}
                 variant="outline"
                 size="md"
               >
@@ -143,8 +152,10 @@ return (
 
             </ThemedView>
         </ThemedView>
+
+        </ScrollView>
       );
-    
+
 }
 
 const styles = StyleSheet.create({
@@ -154,8 +165,15 @@ const styles = StyleSheet.create({
       gap: 8,
     },
     detailsContainer: {
+      alignContent: "space-evenly"
+    },
+    detailsTitleContainer: {
       alignItems: 'center',
       height: 40,
+      marginBottom: 10,
+    },
+    detailsTitle: {
+      fontWeight: "bold",
     },
     reactLogo: {
       height: 178,
@@ -181,10 +199,12 @@ const styles = StyleSheet.create({
       fontSize: 20,
       color: "#007AFF",
       fontWeight: "bold",
-      paddingBottom: 30,
+      marginBottom: 30,
     }, 
     nameText: {
-      fontWeight: "bold" 
+      fontWeight: "bold", 
+      width: 80,
+      marginRight: 10
     },
     button: {
       backgroundColor: "#007AFF",
@@ -192,16 +212,26 @@ const styles = StyleSheet.create({
     },
     listItem: {
       flexDirection: "row",
-      width: 250,
-    },
-    listTitle: {
-      fontWeight: "bold",
+      width: 300,
+      marginBottom: 10,
     },
     listInput: {
-      height: 20
+      width: 210
     }, 
     profileBox: {
-      flex:1, 
-      flexDirection: "row"
-    }
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 20,
+    }, 
+    bioBox: {
+      flexDirection: "column",
+      alignItems: "center",
+      width: 250,
+      marginTop:20,
+      marginBottom:20,
+    },
+    scrollView: {
+      flexGrow: 1,
+      backgroundColor: "white",
+    },
   });
