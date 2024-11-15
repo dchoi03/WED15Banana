@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, Text, FlatList, View } from 'react-native';
+import { Image, StyleSheet, Platform, Text, FlatList, View, Touchable } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {
@@ -38,14 +38,16 @@ export default function BuddyList() {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.listItem}>
-                <Avatar size="xl">
-                  <AvatarFallbackText />
-                  <AvatarImage     
-                  source={{
-                    uri: item.Avatar,
-                  }}/>
-              </Avatar>
-              <Text style={styles.listTitle}>{item.Name}</Text>
+                  <Touchable onP>
+                    <Avatar size="xl">
+                      <AvatarFallbackText />
+                      <AvatarImage     
+                      source={{
+                        uri: item.Avatar,
+                      }}/>
+                  </Avatar>
+                  <Text style={styles.listTitle}>{item.Name}</Text>
+                </Touchable>
               </View>
             )}
           />

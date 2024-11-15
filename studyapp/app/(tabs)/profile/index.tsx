@@ -15,19 +15,73 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar"
 import { useNavigation, Link } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const PROFILE_KEY = "@profile"
+
+interface ProfileObject {
+  id: string,
+  title: string,
+  content: string
+}
 
 export default function ProfilePage() {
-  const[details, setDetails] = useState([ { id: '1', title: "name: ", content: "daf" },
-    { id: '2', title: "education: ", content: "sadf" },
-    { id: '3', title: "University: ", content: "UNSW" },
-    { id: '4', title: "Grade: ", content: "3rd Year"} ,
-    { id: '5', title: "Current Courses: ", content: "default" },
-    { id: '6', title: "Goals: ", content: "Find friends make enemies" },
-    { id: '7', title: "Contact: ", content: "000 0000 0000" },
-    { id: '8', title: "Email: ", content: "Fiaoesfe@gasem.com" }
-    ])
+  const[name, setName] = useState("default");
+  const[bio, setBio] = useState("default")
+  const[profilePic, setProfilePic] = useState('');
+  const[detailsList, setDetailsList] = useState<ProfileObject[]>([])
+  const[profile, setProfile] = useState<ProfileObject[]>([])
+  useEffect(() => {
+
+    const saveLists = async () => {
+      console.log("saving")
+      await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify([ 
+        { id: '1', title: "Username", content: "George" },
+        { id: '2', title: "name", content: "Gerorge pollix" },
+        { id: '3', title: "education", content: "sadf" },
+        { id: '4', title: "University", content: "UNSW" },
+        { id: '5', title: "Grade", content: "3rd Year"} ,
+        { id: '6', title: "Current Courses", content: "default" },
+        { id: '7', title: "Goals", content: "Find friends make enemies" },
+        { id: '8', title: "Contact", content: "000 0000 0000" },
+        { id: '9', title: "Email", content: "Fiaoesfe@gasem.com" },
+        { id: '10', title: "Bio", content: "Im so cool" },
+        { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" }
+      ]))
+    }
+    saveLists();
+
+    const getLists = async () => {
+      const storedLists = await AsyncStorage.getItem(PROFILE_KEY)
+      if (storedLists != null) {
+        setProfile(JSON.parse(storedLists));
+      }
+    }
+    getLists();
+    console.log(profile)
+  }, []);
+
+  useEffect(() => {
+    const updDetailslist = []
+    for (const item of profile) {
+      if (item.title == "Username") {
+        setName(item.content);
+      } else if (item.title == "Bio") {
+        setBio(item.content) 
+      } else if (item.title == "ProfilePic") {
+        setProfilePic(item.content) 
+      } else {
+        console.log(item)
+        updDetailslist.push(item)
+      }
+    }
+    setDetailsList(updDetailslist);
+    console.log(updDetailslist);
+  }, [profile]);
+
+
+ 
 
   const navigation = useNavigation();
   return (
@@ -39,11 +93,11 @@ export default function ProfilePage() {
             <AvatarFallbackText />
             <AvatarImage     
             source={{
-               uri: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg",
+               uri: profilePic,
             }}/>
           </Avatar>
-        <ThemedText style={styles.nameText}>JohnSmilth</ThemedText>
-        <ThemedText style={styles.bioText}>bio asdfjdshf ldshfaliu ehsfliudhls afudhlf asudhfliu adshflui alsdufhsldiuf haldiuf halsd</ThemedText>
+        <ThemedText style={styles.nameText}>{name}</ThemedText>
+        <ThemedText style={styles.bioText}>{bio}</ThemedText>
         <ButtonGroup >
           <Button style={styles.button} action="primary" onPress={() => navigation.navigate('buddyList' as never)}>
           <ButtonText>Buddies</ButtonText>
@@ -55,7 +109,7 @@ export default function ProfilePage() {
         <ThemedView style={styles.detailsContainer}>
           <ThemedText style={styles.nameText}>Your Details</ThemedText>
           <FlatList
-            data={details}
+            data={detailsList}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.listItem}>

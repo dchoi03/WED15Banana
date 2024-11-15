@@ -14,13 +14,38 @@ import {
   AvatarFallbackText,
   AvatarImage,
 } from "@/components/ui/avatar"
-import { useState } from 'react';
-import { useNavigation } from 'expo-router';
+import { useNavigation, useLocalSearchParams,  } from 'expo-router';
 import { Input, InputField  } from "@/components/ui/input"
 import { Textarea, TextareaInput } from "@/components/ui/textarea"
+import { useState, useEffect } from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const PROFILE_KEY = "@profile"
+interface ProfileObject {
+  id: string,
+  title: string,
+  content: string
+}
 
 export default function EditProfilePage() {
   const navigation = useNavigation();
+  const[name, setName] = useState("default");
+  const[bio, setBio] = useState("default")
+  const[profilePic, setProfilePic] = useState('');
+  const[detailsList, setDetailsList] = useState<ProfileObject[]>([])
+  const[profile, setProfile] = useState<ProfileObject[]>([])
+  
+useEffect(() => {
+  const getLists = async () => {
+    const storedLists = await AsyncStorage.getItem(PROFILE_KEY)
+    if (storedLists != null) {
+      setProfile(JSON.parse(storedLists));
+    }
+  }
+  getLists();
+  console.log(profile)
+}, []);
+
 return (
   <ScrollView
   style={styles.scrollView}
