@@ -13,20 +13,20 @@ export default function CreateSessionScreen() {
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [members, setMembers] = useState("");
-  const [showDatePicker, setShowDatePicker] = useState(true);
-  const [showTimePicker, setShowTimePicker] = useState(true);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const navigation = useNavigation();
 
   const onDateChange = (event, selectedDate) => {
-    setShowDatePicker(false);
+    setShowDatePicker(true);
     if (selectedDate) {
       setDate(selectedDate);
     }
   };
 
   const onTimeChange = (event, selectedTime) => {
-    setShowTimePicker(false);
+    setShowTimePicker(true);
     if (selectedTime) {
       setTime(selectedTime);
     }
@@ -145,7 +145,7 @@ export default function CreateSessionScreen() {
 
       <Button 
         style={styles.createButton} 
-        onPress={() => navigation.navigate("index", { name, date, time, location, description, members })}
+        onPress={() => navigation.navigate("index", { name, date: date.toISOString(), time: time.toISOString(), location, description, members })}
       >
         <ButtonText style={styles.buttonText}>Create Session</ButtonText>
       </Button>
