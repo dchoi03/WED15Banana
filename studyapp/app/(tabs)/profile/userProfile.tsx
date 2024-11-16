@@ -14,7 +14,7 @@ import {
   AvatarFallbackText,
   AvatarImage,
 } from "@/components/ui/avatar"
-import { useNavigation, Link } from 'expo-router';
+import { useNavigation, Link, useLocalSearchParams } from 'expo-router';
 import { useState, useEffect } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -31,39 +31,20 @@ export default function ProfilePage() {
   const[bio, setBio] = useState("default")
   const[profilePic, setProfilePic] = useState('');
   const[detailsList, setDetailsList] = useState<ProfileObject[]>([])
-  const[profile, setProfile] = useState<ProfileObject[]>([])
-  useEffect(() => {
-
-    const saveLists = async () => {
-      await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify([ 
-        { id: '1', title: "Username", content: "George" },
-        { id: '2', title: "name", content: "Gerorge pollix" },
-        { id: '3', title: "education", content: "sadf" },
-        { id: '4', title: "University", content: "UNSW" },
-        { id: '5', title: "Grade", content: "3rd Year"} ,
-        { id: '6', title: "Current Courses", content: "default" },
-        { id: '7', title: "Goals", content: "Find friends make enemies" },
-        { id: '8', title: "Contact", content: "000 0000 0000" },
-        { id: '9', title: "Email", content: "Fiaoesfe@gasem.com" },
-        { id: '10', title: "Bio", content: "Im so cool" },
-        { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" },
-      ]))
-    }
-    saveLists();
-
-    const getLists = async () => {
-      const storedLists = await AsyncStorage.getItem(PROFILE_KEY)
-      console.log("in index" + storedLists)
-      if (storedLists != null) {
-        setProfile(JSON.parse(storedLists));
-      }
-    }
-    getLists();
-  }, []);
+  const { profile } = useLocalSearchParams()
 
   useEffect(() => {
+
+    let profileString: string;
+    if (Array.isArray(profile)) {
+      profileString = profile[0];
+    } else {
+      profileString = profile;
+    }
+
+    const ProfileList = JSON.parse(profileString) as ProfileObject[];
     const updDetailslist = []
-    for (const item of profile) {
+    for (const item of ProfileList) {
       if (item.title == "Username") {
         setName(item.content);
       } else if (item.title == "Bio") {
@@ -73,17 +54,19 @@ export default function ProfilePage() {
       } else {
         updDetailslist.push(item)
       }
+      
     }
     setDetailsList(updDetailslist);
-    console.log(updDetailslist);
   }, [profile]);
+
+
+ 
 
   const navigation = useNavigation();
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.padder}/>
         <ThemedView style={styles.subContainer}>
-        <ThemedText style={styles.yourProfile}>Your Profile</ThemedText>
           <Avatar size="2xl">
             <AvatarFallbackText />
             <AvatarImage     
@@ -93,16 +76,8 @@ export default function ProfilePage() {
           </Avatar>
         <ThemedText style={styles.nameText}>{name}</ThemedText>
         <ThemedText style={styles.bioText}>{bio}</ThemedText>
-        <ButtonGroup >
-          <Button style={styles.button} action="primary" onPress={() => navigation.navigate('buddyList' as never)}>
-          <ButtonText>Buddies</ButtonText>
-          </Button >
-          <Button style={styles.button} onPress={() => navigation.navigate('editProfile' as never)}>
-          <ButtonText>Edit Profile</ButtonText>
-          </Button>
-        </ButtonGroup>
         <ThemedView style={styles.detailsContainer}>
-          <ThemedText style={styles.nameText}>Your Details</ThemedText>
+          <ThemedText style={styles.nameText}>Details</ThemedText>
           <FlatList
             data={detailsList}
             keyExtractor={(item) => item.id}
@@ -161,7 +136,8 @@ const styles = StyleSheet.create({
   }, 
   nameText: {
     fontWeight: "bold", 
-    paddingBottom: 20
+    paddingBottom: 20,
+    color: "#007AFF",
   },
   button: {
     backgroundColor: "#007AFF",

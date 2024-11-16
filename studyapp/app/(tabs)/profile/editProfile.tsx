@@ -29,29 +29,80 @@ interface ProfileObject {
 
 export default function EditProfilePage() {
   const navigation = useNavigation();
+  const[username, setUsername] = useState("default");
   const[name, setName] = useState("default");
   const[bio, setBio] = useState("default")
   const[profilePic, setProfilePic] = useState('');
-  const[detailsList, setDetailsList] = useState<ProfileObject[]>([])
+  const[education, setEductaion] = useState("default")
+  const[university, setUniversity] = useState("default")
+  const[currentCourses, setCurrentCourses] = useState("default")
+  const[grade, setGrade] = useState("default")
+  const[goals, setGoals] = useState("default")
+  const[email, setEmail] = useState("default")
+  const[contact, setContact] = useState("default")
   const[profile, setProfile] = useState<ProfileObject[]>([])
   
 useEffect(() => {
   const getLists = async () => {
-    const storedLists = await AsyncStorage.getItem(PROFILE_KEY)
+    const storedLists = await AsyncStorage.getItem("@profile")
     if (storedLists != null) {
       setProfile(JSON.parse(storedLists));
     }
   }
   getLists();
-  console.log(profile)
 }, []);
 
+
+useEffect(() => {
+    for (const item of profile) {
+      if (item.title == "Username") {
+        setName(item.content);
+      } else if (item.title == "Bio") {
+        setBio(item.content) 
+      } else if (item.title == "ProfilePic") {
+        setProfilePic(item.content) 
+      } else if (item.title == "Education") {
+        setEductaion(item.content) 
+      } else if (item.title == "University") {
+        setUniversity(item.content) 
+      } else if (item.title == "Grade") {
+        setGrade(item.content) 
+      } else if (item.title == "Goals") {
+        setGoals(item.content) 
+      } else if (item.title == "Current Courses") {
+        setCurrentCourses(item.content) 
+      } else if (item.title == "Email") {
+        setEmail(item.content) 
+      } else if (item.title == "Contact") {
+        setContact(item.content) 
+      } else if (item.title == "Username") {
+        setUsername(item.content) 
+      } 
+    }
+  }, [profile]);
+
+  const saveUpdates = async () => {
+      await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify([ 
+        { id: '1', title: "Username", content: username},
+        { id: '2', title: "name", content: name },
+        { id: '3', title: "education", content: education },
+        { id: '4', title: "University", content: university },
+        { id: '5', title: "Grade", content: grade} ,
+        { id: '6', title: "Current Courses", content: currentCourses },
+        { id: '7', title: "Goals", content: goals },
+        { id: '8', title: "Contact", content: contact },
+        { id: '9', title: "Email", content: email},
+        { id: '10', title: "Bio", content: bio },
+        { id: '11', title: "ProfilePic", content: profilePic },
+      ]))
+    saveUpdates();
+  }
 return (
-  <ScrollView
-  style={styles.scrollView}
-  contentContainerStyle={styles.container}
-  >
-        <ThemedView style={styles.container}>
+
+  <ThemedView style={styles.container}>
+            <ScrollView
+            style={styles.scrollView}
+            >
           <ThemedView style={styles.padder}/>
             <ThemedView style={styles.subContainer}>
             
@@ -63,12 +114,23 @@ return (
                 <ThemedText>Add/Edit your Profile</ThemedText>
               </ThemedView>
 
+              <ThemedView style={styles.listItem}>
+              <ThemedText style={styles.nameText}>Username</ThemedText>
+              <Input
+                style={styles.listInput}
+                variant="outline"
+                size="md"
+              >
+                <InputField placeholder={username} />
+              </Input>
+              </ThemedView>
+
             <ThemedView style={styles.bioBox}>
               <ThemedText style={styles.detailsTitle}>Bio</ThemedText>
               <Textarea
                 size="md"
               >
-                <TextareaInput placeholder="Your text goes here..." />
+                <TextareaInput placeholder={bio} />
               </Textarea>
             </ThemedView>   
 
@@ -85,7 +147,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder="Enter Text here..." />
+                <InputField placeholder={name} />
               </Input>
               </ThemedView>
 
@@ -96,7 +158,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder="Enter Text here..." />
+                <InputField placeholder={education} />
               </Input>
               </ThemedView>
 
@@ -107,7 +169,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder="Enter Text here..." />
+                <InputField placeholder={university} />
               </Input>
               </ThemedView>
 
@@ -118,7 +180,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder="Enter Text here..." />
+                <InputField placeholder={grade}/>
               </Input>
               </ThemedView>
 
@@ -129,7 +191,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder="Enter Text here..." />
+                <InputField placeholder={currentCourses} />
               </Input>
               </ThemedView>
 
@@ -140,7 +202,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder="Enter Text here..." />
+                <InputField placeholder={goals} />
               </Input>
               </ThemedView>
 
@@ -151,7 +213,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder="Enter Text here..." />
+                <InputField placeholder={contact} />
               </Input>
               </ThemedView>
 
@@ -162,7 +224,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder="Enter Text here..." />
+                <InputField placeholder={email} />
               </Input>
               </ThemedView>
 
@@ -170,15 +232,16 @@ return (
 
 
             <ButtonGroup >
-              <Button style={styles.button}>
+              <Button style={styles.button} onPress={() => {saveUpdates()}}>
               <ButtonText>Save Changes</ButtonText>
               </Button>
             </ButtonGroup>
 
             </ThemedView>
+            
+        </ScrollView>
         </ThemedView>
 
-        </ScrollView>
       );
 
 }
@@ -217,7 +280,7 @@ const styles = StyleSheet.create({
       backgroundColor: "light-blue"
     }, 
     subContainer: {
-      flex: 1,
+  
       alignItems: "center",
     },
     yourProfile: {

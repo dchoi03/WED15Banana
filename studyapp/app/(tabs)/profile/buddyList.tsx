@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, Text, FlatList, View, Touchable } from 'react-native';
+import { Image, StyleSheet, Platform, Text, FlatList, View, Pressable } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {
@@ -18,38 +18,103 @@ import { useState } from 'react';
 import { useNavigation } from 'expo-router';
 import { Input, InputField  } from "@/components/ui/input"
 import { Textarea, TextareaInput } from "@/components/ui/textarea"
+import { StackNavigationProp } from '@react-navigation/stack';
+
+export type RootStackParamList = {
+  userProfile: { profile: string } | undefined;
+};
+
+interface ProfileObject {
+  id: string,
+  title: string,
+  content: string
+}
 
 export default function BuddyList() {
-    const[details, setDetails] = useState([ { id: '1', Avatar: "name: ", Name: "daf" },
-      { id: '2', Avatar: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg: ", Name: "sadf" },
-      { id: '3', Avatar: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg: ", Name: "UNSW" },
-      { id: '4', Avatar: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg: ", Name: "3rd Year"} ,
-      { id: '5', Avatar: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg Courses: ", Name: "default" },
-      { id: '6', Avatar: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg: ", Name: "Find friends make enemies" },
-      { id: '7', Avatar: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg: ", Name: "000 0000 0000" },
-      { id: '8', Avatar: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg: ", Name: "Fiaoesfe@gasem.com" }
+    const[details, setDetails] = useState([
+      [ 
+        { id: '1', title: "Username", content: "George" },
+        { id: '2', title: "name", content: "Gerorge pollix" },
+        { id: '3', title: "education", content: "sadf" },
+        { id: '4', title: "University", content: "UNSW" },
+        { id: '5', title: "Grade", content: "3rd Year"} ,
+        { id: '6', title: "Current Courses", content: "default" },
+        { id: '7', title: "Goals", content: "Find friends make enemies" },
+        { id: '8', title: "Contact", content: "000 0000 0000" },
+        { id: '9', title: "Email", content: "Fiaoesfe@gasem.com" },
+        { id: '10', title: "Bio", content: "Im so cool" },
+        { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" }
+      ],
+      [ 
+        { id: '1', title: "Username", content: "ahdsed" },
+        { id: '2', title: "name", content: "brsf fsaf pollix" },
+        { id: '3', title: "education", content: "sadf" },
+        { id: '4', title: "University", content: "UNSW" },
+        { id: '5', title: "Grade", content: "3rd Year"} ,
+        { id: '6', title: "Current Courses", content: "default" },
+        { id: '7', title: "Goals", content: "Find friends make enemies" },
+        { id: '8', title: "Contact", content: "000 0000 0000" },
+        { id: '9', title: "Email", content: "Fiaoesfe@gasem.com" },
+        { id: '10', title: "Bio", content: "Im so cool" },
+        { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" }
+      ],
+      [ 
+        { id: '1', title: "Username", content: "beftsa" },
+        { id: '2', title: "name", content: "gerefe pollix" },
+        { id: '3', title: "education", content: "sadf" },
+        { id: '4', title: "University", content: "UNSW" },
+        { id: '5', title: "Grade", content: "3rd Year"} ,
+        { id: '6', title: "Current Courses", content: "default" },
+        { id: '7', title: "Goals", content: "Find friends make enemies" },
+        { id: '8', title: "Contact", content: "000 0000 0000" },
+        { id: '9', title: "Email", content: "Fiaoesfe@gasem.com" },
+        { id: '10', title: "Bio", content: "Im so cool" },
+        { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" }
+      ]
       ])
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+  const unBuddy = (index: string) => {
+    setDetails(details.filter((curEn) => {
+      return curEn.find((obj) => obj.title === 'Username')?.content !== index} ))
+  }
+
+
+  const renderItem = ({ item }: { item: ProfileObject[] }) => {
+    const username = item.find((obj) => obj.title === 'Username')?.content || '';
+    const avatar = item.find((obj) => obj.title === 'ProfilePic')?.content || '';
+
+    return (
+      <View style={styles.itemBox}>
+      <Pressable onPress={() => {
+          const profile = JSON.stringify(item);
+          navigation.navigate("userProfile", { profile })}
+        }>
+        <View style={styles.listItem}>
+        <Avatar size="lg">
+          <AvatarFallbackText />
+          <AvatarImage     
+          source={{
+            uri: avatar
+          }}/>
+      </Avatar>
+      <Text style={styles.listTitle}>{username}</Text>
+      <Button style={styles.button} action="negative" onPress={() => {unBuddy(username)}}>
+          <ButtonText>UnBuddy</ButtonText>
+      </Button >
+      </View>
+    </Pressable>
+    </View>
+    )
+  }
+
   return (
     <ThemedView style={styles.container}>
         <ThemedView style={styles.subContainer}>
           <FlatList
             data={details}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.listItem}>
-                  <Touchable onP>
-                    <Avatar size="xl">
-                      <AvatarFallbackText />
-                      <AvatarImage     
-                      source={{
-                        uri: item.Avatar,
-                      }}/>
-                  </Avatar>
-                  <Text style={styles.listTitle}>{item.Name}</Text>
-                </Touchable>
-              </View>
-            )}
+            keyExtractor={(item, index) => `${index}-${item[0].content}`}
+            renderItem={renderItem}
           />
         </ThemedView>
     </ThemedView>
@@ -81,12 +146,11 @@ const styles = StyleSheet.create({
     color: "#007AFF",
   },
   listItem: {
-    flex: 1,
     flexDirection: "row",
-    justifyContent: "flex-start",
-    alignContent: "space-evenly",
-    alignSelf: "stretch",
-    marginVertical: 20  },
+    justifyContent: "space-between",
+    marginVertical: 20,
+    alignItems: "center",
+  },
   listTitle: {
     width: 100,
     fontWeight: "bold",
@@ -95,6 +159,9 @@ const styles = StyleSheet.create({
   bioText: {
     width: 250,
     marginBottom: 20
+  },
+  itemBox: {
+    width: 350
   }
 });
 
