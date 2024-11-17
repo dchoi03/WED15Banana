@@ -10,7 +10,7 @@ import SearchResults from './searchResult'
 export default function HomeScreen() {
 
   const [searchText, setSearchText] = useState<string>("")
-
+  
   return (
     <ScrollView
       style={styles.scrollView}
