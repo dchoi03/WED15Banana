@@ -1,20 +1,22 @@
-import { Image, StyleSheet, View, ScrollView } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  Image,
+  StyleSheet,
+  View,
+  ScrollView,
+} from "react-native";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
-import React, { FC, useState } from "react";
 import { ButtonIcon, ButtonText, Button } from "@/components/ui/button";
 import { Badge, BadgeText, BadgeIcon } from "@/components/ui/badge";
-import {
-  Plus,
-  X,
-  GraduationCap,
-  Clock,
-  Check,
-  Star,
-} from "lucide-react-native";
+import { Plus, X, GraduationCap, Clock, Check, Star } from "lucide-react-native";
 import Toast from "react-native-toast-message";
-import { addBuddy, areNotBuddies, isBuddy } from "@/scripts";
-import { useFocusEffect } from "@react-navigation/native";
+// me
+import { useAuth } from "../context/AuthContext";
+import LoginPage from "../components/LoginPage";
+import SignUpPage from "../components/SignUpPage";
+import LandingPage from "../components/LandingPage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const sampleStudents = [
   {
@@ -44,139 +46,135 @@ const sampleStudents = [
   },
 ];
 
-type BadgeType = {
-  name: string,
-  icon: FC
-}
-
-type Student = {
-  name: string,
-  year: string,
-  degree: string,
-  image: string,
-  badges: BadgeType[]
-}
-
 export default function HomeScreen() {
+    // rishi and me
+  const { isAuthenticated } = useAuth();
+  const PROFILE_KEY = "@profile"
+
+  const [currentScreen, setCurrentScreen] = useState<"landing" | "login" | "signup">("landing");
   const [studentNumber, setStudentNumber] = useState(0);
-  const [students, setStudents] = useState<Student[]>([])
-  const MAXSTUDENTS = students.length;
+  const MAXSTUDENTS = sampleStudents.length;
 
-  useFocusEffect(
-    React.useCallback(() => {
-    const filterBuddies = async () => {
-      const names: string[] = sampleStudents.map((student) => student.name)
-      const filteredList = await areNotBuddies(names)
-      const filteredStudents: Student[] = sampleStudents.filter(value => filteredList.includes(value.name));
-      setStudents(filteredStudents)
+  useEffect(() => {
+
+  const getUserProfile = async () => {
+    const storedLists = await AsyncStorage.getItem(PROFILE_KEY)
+    if (storedLists != null) {
+        console.log("STOREDLISTS FROM GETUSERPROFILE")
+        console.log(storedLists);
     }
-    filterBuddies();
-  }, 
-  []))
-
-  const sendRequest = async (name: string) => {
-    await addBuddy(name);
+    }
+    getUserProfile();
+}, []);
+  const sendRequest = (name: string) => {
     Toast.show({
       type: "success",
       text1: "Success",
       text2: "Buddy request sent to " + name + "!",
     });
   };
-
-  return (
-    <ScrollView
-      style={styles.scrollView}
-      contentContainerStyle={styles.container}
-    >
-      <Heading style={{ color: "#007AFF" }} size={"xl"}>
-        Buddy Matcher
-      </Heading>
-      {studentNumber >= MAXSTUDENTS ? (
-        <Text style={{width: 300, textAlign: 'center'}}>Check back in 1 hour for more student recommendations</Text>
-      ) : (
-        <View>
-          <View style={styles.personCard}>
-            {/* Profile picture */}
-            <Image
-              style={styles.personImage}
-              source={{ uri: students[studentNumber].image }}
-            />
-            {/* Personal information */}
-            <View style={styles.personalInfo}>
-              <View style={styles.peronHeading}>
-                <Text
-                  style={[styles.textColor, { fontWeight: 500 }]}
-                  size={"2xl"}
-                >
-                  {students[studentNumber].name}
-                </Text>
-                <Text
-                  style={[styles.textColor, { fontWeight: 300 }]}
-                  size={"lg"}
-                >
-                  {students[studentNumber].year}
+//   isauthenticated to determine whether logged in or not
+  if (isAuthenticated) {
+    // colbys work
+    return (
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.container}
+      >
+        <Heading style={{ color: "#007AFF" }} size="xl">
+          Buddy Matcher
+        </Heading>
+        {studentNumber >= MAXSTUDENTS ? (
+          <Text style={{ width: 300, textAlign: "center" }} size="md">
+            Check back in 1 hour for more student recommendations
+          </Text>
+        ) : (
+          <View>
+            <View style={styles.personCard}>
+              <Image
+                style={styles.personImage}
+                source={{ uri: sampleStudents[studentNumber].image }}
+              />
+              <View style={styles.personalInfo}>
+                <View style={styles.peronHeading}>
+                  <Text
+                    style={styles.textColor}
+                    size="2xl"
+                  >
+                    {sampleStudents[studentNumber].name}
+                  </Text>
+                  <Text
+                    style={styles.textColor}
+                    size="lg"
+                  >
+                    {sampleStudents[studentNumber].year}
+                  </Text>
+                </View>
+                <Text style={styles.textColor} size="md">
+                  {sampleStudents[studentNumber].degree}
                 </Text>
               </View>
-              <Text style={styles.textColor} size={"md"}>
-                {students[studentNumber].degree}
-              </Text>
+              <View style={styles.traitBadges}>
+                {sampleStudents[studentNumber].badges.map((badge, index) => (
+                  <Badge
+                    action="info"
+                    size="lg"
+                    variant="solid"
+                    style={styles.badge}
+                    key={index}
+                  >
+                    <BadgeIcon color="#05405D" size="lg" as={badge.icon} />
+                    <BadgeText style={styles.textColor}>{badge.name}</BadgeText>
+                  </Badge>
+                ))}
+              </View>
             </View>
-            {/* Personal badges */}
-            <View style={styles.traitBadges}>
-              {students[studentNumber].badges.map((badge, index) => (
-                <Badge
-                  action="info"
-                  size="lg"
-                  variant="solid"
-                  style={styles.badge}
-                  key={index}
-                >
-                  <BadgeIcon color="#05405D" size="lg" as={badge.icon} />
-                  <BadgeText style={styles.textColor}>{badge.name}</BadgeText>
-                </Badge>
-              ))}
+            <View style={styles.buttons}>
+              <Button
+                action="negative"
+                variant="outline"
+                size="xl"
+                onPress={() => setStudentNumber((current) => current + 1)}
+              >
+                <ButtonIcon size="lg" as={X} />
+                <ButtonText style={{ color: "#E63535" }}>Skip</ButtonText>
+              </Button>
+              <Button
+                style={{ backgroundColor: "#007AFF" }}
+                action="positive"
+                variant="solid"
+                size="xl"
+                onPress={() => {
+                  setStudentNumber((current) => current + 1);
+                  sendRequest(sampleStudents[studentNumber].name);
+                }}
+              >
+                <ButtonIcon size="lg" as={Plus} />
+                <ButtonText>Add</ButtonText>
+              </Button>
             </View>
           </View>
-          {/* Buttons */}
-          <View style={styles.buttons}>
-            <Button
-              action="negative"
-              variant="outline"
-              size="xl"
-              onPress={() => setStudentNumber((current) => current + 1)}
-            >
-              <ButtonIcon size="lg" as={X} />
-              <ButtonText style={{ color: "#E63535" }}>Skip</ButtonText>
-            </Button>
-            <Button
-              style={{ backgroundColor: "#007AFF" }}
-              action="positive"
-              variant="solid"
-              size="xl"
-              onPress={() => {
-                setStudentNumber((current) => current + 1);
-                sendRequest(students[studentNumber].name);
-              }}
-            >
-              <ButtonIcon size="lg" as={Plus} />
-              <ButtonText>Add</ButtonText>
-            </Button>
-          </View>
-        </View>
-      )}
-    </ScrollView>
-  );
+        )}
+      </ScrollView>
+    );
+  }
+
+  switch (currentScreen) {
+    case "login":
+      return <LoginPage />;
+    case "signup":
+      return <SignUpPage />;
+    default:
+      return <LandingPage onNavigate={setCurrentScreen} />;
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    flexDirection: "column",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     alignItems: "center",
-    paddingTop: 60,
-    paddingHorizontal: 16,
-    gap: 48,
+    padding: 16,
   },
   scrollView: {
     flexGrow: 1,
@@ -187,12 +185,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     gap: 12,
-  },
-  personProfile: {
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    gap: 8,
   },
   personImage: {
     borderRadius: 12,
