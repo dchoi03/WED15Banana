@@ -1,7 +1,7 @@
 import { Image, StyleSheet, View, ScrollView } from "react-native";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
-import { useState } from "react";
+import React, { FC, useState } from "react";
 import { ButtonIcon, ButtonText, Button } from "@/components/ui/button";
 import { Badge, BadgeText, BadgeIcon } from "@/components/ui/badge";
 import {
@@ -13,6 +13,8 @@ import {
   Star,
 } from "lucide-react-native";
 import Toast from "react-native-toast-message";
+import { addBuddy, areNotBuddies, isBuddy } from "@/scripts";
+import { useFocusEffect } from "@react-navigation/native";
 
 const sampleStudents = [
   {
@@ -42,11 +44,38 @@ const sampleStudents = [
   },
 ];
 
+type BadgeType = {
+  name: string,
+  icon: FC
+}
+
+type Student = {
+  name: string,
+  year: string,
+  degree: string,
+  image: string,
+  badges: BadgeType[]
+}
+
 export default function HomeScreen() {
   const [studentNumber, setStudentNumber] = useState(0);
-  const MAXSTUDENTS = sampleStudents.length;
+  const [students, setStudents] = useState<Student[]>([])
+  const MAXSTUDENTS = students.length;
 
-  const sendRequest = (name: string) => {
+  useFocusEffect(
+    React.useCallback(() => {
+    const filterBuddies = async () => {
+      const names: string[] = sampleStudents.map((student) => student.name)
+      const filteredList = await areNotBuddies(names)
+      const filteredStudents: Student[] = sampleStudents.filter(value => filteredList.includes(value.name));
+      setStudents(filteredStudents)
+    }
+    filterBuddies();
+  }, 
+  []))
+
+  const sendRequest = async (name: string) => {
+    await addBuddy(name);
     Toast.show({
       type: "success",
       text1: "Success",
@@ -70,7 +99,7 @@ export default function HomeScreen() {
             {/* Profile picture */}
             <Image
               style={styles.personImage}
-              source={{ uri: sampleStudents[studentNumber].image }}
+              source={{ uri: students[studentNumber].image }}
             />
             {/* Personal information */}
             <View style={styles.personalInfo}>
@@ -79,22 +108,22 @@ export default function HomeScreen() {
                   style={[styles.textColor, { fontWeight: 500 }]}
                   size={"2xl"}
                 >
-                  {sampleStudents[studentNumber].name}
+                  {students[studentNumber].name}
                 </Text>
                 <Text
                   style={[styles.textColor, { fontWeight: 300 }]}
                   size={"lg"}
                 >
-                  {sampleStudents[studentNumber].year}
+                  {students[studentNumber].year}
                 </Text>
               </View>
               <Text style={styles.textColor} size={"md"}>
-                {sampleStudents[studentNumber].degree}
+                {students[studentNumber].degree}
               </Text>
             </View>
             {/* Personal badges */}
             <View style={styles.traitBadges}>
-              {sampleStudents[studentNumber].badges.map((badge, index) => (
+              {students[studentNumber].badges.map((badge, index) => (
                 <Badge
                   action="info"
                   size="lg"
@@ -126,7 +155,7 @@ export default function HomeScreen() {
               size="xl"
               onPress={() => {
                 setStudentNumber((current) => current + 1);
-                sendRequest(sampleStudents[studentNumber].name);
+                sendRequest(students[studentNumber].name);
               }}
             >
               <ButtonIcon size="lg" as={Plus} />

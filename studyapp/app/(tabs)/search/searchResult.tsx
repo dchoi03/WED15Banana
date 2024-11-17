@@ -23,7 +23,7 @@ const sampleStudents = [
     ).uri,
   },
   {
-    name: "George",
+    name: "Geb",
     year: "2nd Year",
     degree: "Commerce",
     numMutals: "0",
