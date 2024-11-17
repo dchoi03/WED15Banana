@@ -15,11 +15,25 @@ const formatTime = (timeString) => {
 export default function SessionsScreen() {
   const [selected, setSelected] = useState('');
   const [mySessions, setMySessions] = useState([]);
+  const [markedDates, setMarkedDates] = useState({
+    '2024-12-03': { customStyles: styles.markedDateContainer },
+    '2024-12-14': { customStyles: styles.markedDateContainer },
+    '2024-12-29': { customStyles: styles.markedDateContainer },
+  });  // State to store marked dates
   const { name, date, time, location, description, members } = useLocalSearchParams();
 
   useEffect(() => {
+    // If session data is available, add it to the sessions and mark the date on the calendar
     if (name && date) {
-      setMySessions((prevSessions) => [...prevSessions, { name, date, time, location, description, members }]);
+      const newSession = { name, date, time, location, description, members };
+      setMySessions((prevSessions) => [...prevSessions, newSession]);
+
+      // Update the markedDates with the new session's date
+      const formattedDate = date.split('T')[0];  // Extract the date part (YYYY-MM-DD)
+      setMarkedDates((prevDates) => ({
+        ...prevDates,
+        [formattedDate]: { selected: true, selectedColor: "#088DCD", customStyles: styles.JoinedDateContainer },
+      }));
     }
   }, [name, date, time, location, description, members]);
 
@@ -50,9 +64,8 @@ export default function SessionsScreen() {
           onDayPress={(day) => {
             setSelected(day.dateString);
           }}
-          markedDates={{
-            [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: "orange" },
-          }}
+          markedDates={markedDates}  // Use the markedDates state here
+          markingType={'custom'} // Specify custom marking type
         />
         <View>
           <Text style={styles.GroupSessionHeading}>Your Group Sessions</Text>
@@ -76,11 +89,11 @@ export default function SessionsScreen() {
           <View style={styles.tasksWrapper}>
               <View style={styles.taskContainer2}>
                 <Text style={styles.sessionTitle2}>Python Help Session</Text>
-                <Text style={styles.sessionDetails2}>21/12/2024 11:00am - UNSW Law Library</Text>
+                <Text style={styles.sessionDetails2}>3/12/2024 11:00am - UNSW Law Library</Text>
               </View>
               <View style={styles.taskContainer2}>
                 <Text style={styles.sessionTitle2}>COMP3121 Study Session</Text>
-                <Text style={styles.sessionDetails2}>24/12/2024 2:00pm - Online</Text>
+                <Text style={styles.sessionDetails2}>14/12/2024 2:00pm - Online</Text>
               </View>
               <View style={styles.taskContainer2}>
                 <Text style={styles.sessionTitle2}>COMP1151 Review</Text>
@@ -89,6 +102,7 @@ export default function SessionsScreen() {
             </View>
         </View>
       </ScrollView>
+      
       {/* Create Session Button */}
       <View style={styles.floatingButton}>
         <Link href="/sessions/create" asChild>
@@ -133,7 +147,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontWeight: "bold",
     fontSize: 24,
-    marginBottom: 10,
+    marginTop: 15,
+    marginVertical: 10,
   },
   floatingButton: {
     position: "absolute",
@@ -211,5 +226,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#1F1F1F",
     marginTop: 5,
+  },
+  markedDateContainer: {
+    container: {
+      backgroundColor: '#A2DDFA',
+      borderRadius: 5,
+    },
+    text: {
+      color: '#000',
+    },
+  },
+  JoinedDateContainer: {
+    container: {
+      backgroundColor: '#088DCD',
+      borderRadius: 5,
+    }
   },
 });

@@ -79,7 +79,7 @@ export default function CreateSessionScreen() {
       <Text style={styles.label}>Date</Text>
         <VStack space="md">
         <View style={{flexDirection: "row"}}>
-          <Input style={{ height: 45 }}>
+          {/* <Input style={{ height: 45 }}>
             <TouchableOpacity 
               onPress={() => setShowDatePicker(true)} 
               style={styles.datePickerTouchable}
@@ -88,15 +88,15 @@ export default function CreateSessionScreen() {
                 {date.toDateString()}
               </Text>
             </TouchableOpacity>
-          </Input>
-          {showDatePicker && (
+          </Input> */}
+          
             <DateTimePicker 
+            style={{ backgroundColor: 'white' }}
               value={date}
               mode="date"
               display="default"
               onChange={onDateChange}
             />
-          )}
         </View>
         </VStack>
       </View>
