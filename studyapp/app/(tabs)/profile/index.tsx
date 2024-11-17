@@ -17,6 +17,8 @@ import {
 import { useNavigation } from 'expo-router';
 import { useState, useEffect } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import { Box } from "@/components/ui/box";
 
 const PROFILE_KEY = "@profile"
 
@@ -32,6 +34,7 @@ export default function ProfilePage() {
   const[profilePic, setProfilePic] = useState('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6LXNJFTmLzCoExghcATlCWG85kI8dsnhJng&s');
   const[detailsList, setDetailsList] = useState<ProfileObject[]>([])
   const[profile, setProfile] = useState<ProfileObject[]>([])
+  const [colorMode, setColorMode] = useState<"light" | "dark">("light");
   useEffect(() => {
 
     const saveDetails = async () => {

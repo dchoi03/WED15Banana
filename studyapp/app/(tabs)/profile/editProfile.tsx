@@ -49,8 +49,21 @@ export default function EditProfilePage() {
   const[email, setEmail] = useState("default")
   const[contact, setContact] = useState("default")
   const[profile, setProfile] = useState<ProfileObject[]>([])
-  
+  const [mediaLibraryPermissions] = ImagePicker.useMediaLibraryPermissions();
+
+  const checkPermissions = async () => {
+    const cameraPermissions = await ImagePicker.requestCameraPermissionsAsync();
+    const mediaLibraryPermissions =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!cameraPermissions.granted && !mediaLibraryPermissions.granted) {
+      alert(
+        "Please grant media library permissions in settings."
+      );
+    }
+  };
+
 useEffect(() => {
+  checkPermissions();
   const getLists = async () => {
     const storedLists = await AsyncStorage.getItem("@profile")
     if (storedLists != null) {
