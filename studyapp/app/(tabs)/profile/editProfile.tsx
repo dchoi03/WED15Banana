@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, Text, ScrollView } from 'react-native';
+import { Image, StyleSheet, Platform, Text, ScrollView, Pressable } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {
@@ -14,13 +14,20 @@ import {
   AvatarFallbackText,
   AvatarImage,
 } from "@/components/ui/avatar"
-import { useNavigation, useLocalSearchParams,  } from 'expo-router';
+import { useNavigation } from 'expo-router';
 import { Input, InputField  } from "@/components/ui/input"
 import { Textarea, TextareaInput } from "@/components/ui/textarea"
 import { useState, useEffect } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StackNavigationProp } from '@react-navigation/stack';
+import * as ImagePicker from "expo-image-picker";
 
 const PROFILE_KEY = "@profile"
+
+export type RootStackParamList = {
+  userProfile: { profile: string } | undefined;
+};
+
 interface ProfileObject {
   id: string,
   title: string,
@@ -28,11 +35,12 @@ interface ProfileObject {
 }
 
 export default function EditProfilePage() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
   const[username, setUsername] = useState("default");
   const[name, setName] = useState("default");
   const[bio, setBio] = useState("default")
-  const[profilePic, setProfilePic] = useState('');
+  const[profilePic, setProfilePic] = useState('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6LXNJFTmLzCoExghcATlCWG85kI8dsnhJng&s');
   const[education, setEductaion] = useState("default")
   const[university, setUniversity] = useState("default")
   const[currentCourses, setCurrentCourses] = useState("default")
@@ -55,7 +63,7 @@ useEffect(() => {
 
 useEffect(() => {
     for (const item of profile) {
-      if (item.title == "Username") {
+      if (item.title == "name") {
         setName(item.content);
       } else if (item.title == "Bio") {
         setBio(item.content) 
@@ -79,7 +87,7 @@ useEffect(() => {
         setUsername(item.content) 
       } 
     }
-  }, [profile]);
+  }, [profile, profilePic]);
 
   const saveUpdates = async () => {
       await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify([ 
@@ -97,6 +105,15 @@ useEffect(() => {
       ]))
     saveUpdates();
   }
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    });
+    if (!result.canceled) {
+      setProfilePic(result.assets[0].uri);
+    }
+  };
 return (
 
   <ThemedView style={styles.container}>
@@ -105,23 +122,25 @@ return (
             >
           <ThemedView style={styles.padder}/>
             <ThemedView style={styles.subContainer}>
-            
+              
               <ThemedView style={styles.profileBox}>
                  <Avatar size="xl">
                   <AvatarFallbackText />
-                  <AvatarImage />
+                  <AvatarImage source={{ uri: profilePic }} />
                 </Avatar>
-                <ThemedText>Add/Edit your Profile</ThemedText>
+                  <Pressable onPress={() => pickImage()}>
+                  <ThemedText>Add/Edit your Profile Pic</ThemedText>
+                </Pressable>
               </ThemedView>
 
-              <ThemedView style={styles.listItem}>
+              <ThemedView style={styles.userNameBox}>
               <ThemedText style={styles.nameText}>Username</ThemedText>
               <Input
                 style={styles.listInput}
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={username} />
+                <InputField placeholder={username} onBlur={setUsername} />
               </Input>
               </ThemedView>
 
@@ -130,7 +149,7 @@ return (
               <Textarea
                 size="md"
               >
-                <TextareaInput placeholder={bio} />
+                <TextareaInput placeholder={bio} onChangeText={setBio} />
               </Textarea>
             </ThemedView>   
 
@@ -147,7 +166,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={name} />
+                <InputField placeholder={name} onChangeText={setName}/>
               </Input>
               </ThemedView>
 
@@ -158,7 +177,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={education} />
+                <InputField placeholder={education}  onChangeText={setEductaion}/>
               </Input>
               </ThemedView>
 
@@ -180,7 +199,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={grade}/>
+                <InputField placeholder={grade} onChangeText={setGrade}/>
               </Input>
               </ThemedView>
 
@@ -191,7 +210,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={currentCourses} />
+                <InputField placeholder={currentCourses} onChangeText={setCurrentCourses} />
               </Input>
               </ThemedView>
 
@@ -202,7 +221,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={goals} />
+                <InputField placeholder={goals} onChangeText={setGoals} />
               </Input>
               </ThemedView>
 
@@ -213,7 +232,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={contact} />
+                <InputField placeholder={contact} onChangeText={setContact}/>
               </Input>
               </ThemedView>
 
@@ -224,7 +243,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={email} />
+                <InputField placeholder={email} onChangeText={setEmail}/>
               </Input>
               </ThemedView>
 
@@ -232,7 +251,10 @@ return (
 
 
             <ButtonGroup >
-              <Button style={styles.button} onPress={() => {saveUpdates()}}>
+              <Button style={styles.button} onPress={() => {
+                saveUpdates()
+                navigation.navigate("index" as never);
+                }}>
               <ButtonText>Save Changes</ButtonText>
               </Button>
             </ButtonGroup>
@@ -317,6 +339,11 @@ const styles = StyleSheet.create({
       width: 250,
       marginTop:20,
       marginBottom:20,
+    },
+    userNameBox: {
+      flexDirection: "column",
+      alignItems: "center",
+      marginTop:20,
     },
     scrollView: {
       flexGrow: 1,

@@ -14,7 +14,7 @@ import {
   AvatarFallbackText,
   AvatarImage,
 } from "@/components/ui/avatar"
-import { useNavigation, Link } from 'expo-router';
+import { useNavigation } from 'expo-router';
 import { useState, useEffect } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -29,36 +29,35 @@ interface ProfileObject {
 export default function ProfilePage() {
   const[name, setName] = useState("default");
   const[bio, setBio] = useState("default")
-  const[profilePic, setProfilePic] = useState('');
+  const[profilePic, setProfilePic] = useState('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6LXNJFTmLzCoExghcATlCWG85kI8dsnhJng&s');
   const[detailsList, setDetailsList] = useState<ProfileObject[]>([])
   const[profile, setProfile] = useState<ProfileObject[]>([])
   useEffect(() => {
 
-    const saveLists = async () => {
+    const saveDetails = async () => {
       await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify([ 
         { id: '1', title: "Username", content: "George" },
         { id: '2', title: "name", content: "Gerorge pollix" },
         { id: '3', title: "education", content: "sadf" },
         { id: '4', title: "University", content: "UNSW" },
         { id: '5', title: "Grade", content: "3rd Year"} ,
-        { id: '6', title: "Current Courses", content: "default" },
+        { id: '6', title: "Current Courses", content: "Comp 4511" },
         { id: '7', title: "Goals", content: "Find friends make enemies" },
         { id: '8', title: "Contact", content: "000 0000 0000" },
         { id: '9', title: "Email", content: "Fiaoesfe@gasem.com" },
-        { id: '10', title: "Bio", content: "Im so cool" },
+        { id: '10', title: "Bio", content: "Im so cool. This is a fire app. lorem ipsum dipsum deloreajfnf afaidshfa fasdnfkadbsf adbfadbfasldfbjadbsl" },
         { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" },
       ]))
     }
-    saveLists();
+    saveDetails();
 
-    const getLists = async () => {
+    const getUserProfile = async () => {
       const storedLists = await AsyncStorage.getItem(PROFILE_KEY)
-      console.log("in index" + storedLists)
       if (storedLists != null) {
         setProfile(JSON.parse(storedLists));
       }
     }
-    getLists();
+    getUserProfile();
   }, []);
 
   useEffect(() => {
@@ -75,7 +74,6 @@ export default function ProfilePage() {
       }
     }
     setDetailsList(updDetailslist);
-    console.log(updDetailslist);
   }, [profile]);
 
   const navigation = useNavigation();
@@ -168,7 +166,6 @@ const styles = StyleSheet.create({
     color: "#007AFF",
   },
   listItem: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "flex-start",
     alignContent: "space-evenly",

@@ -14,11 +14,14 @@ import {
   AvatarFallbackText,
   AvatarImage,
 } from "@/components/ui/avatar"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigation } from 'expo-router';
 import { Input, InputField  } from "@/components/ui/input"
 import { Textarea, TextareaInput } from "@/components/ui/textarea"
 import { StackNavigationProp } from '@react-navigation/stack';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const BUDDY_LIST = "@Buddy"
 
 export type RootStackParamList = {
   userProfile: { profile: string } | undefined;
@@ -74,6 +77,16 @@ export default function BuddyList() {
       ])
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
+  useEffect(() => {
+  const getUserProfile = async () => {
+    const storedLists = await AsyncStorage.getItem(BUDDY_LIST)
+    if (storedLists != null) {
+      setDetails(JSON.parse(storedLists));
+    }
+  }
+  getUserProfile();
+}, []);
+
   const unBuddy = (index: string) => {
     setDetails(details.filter((curEn) => {
       return curEn.find((obj) => obj.title === 'Username')?.content !== index} ))
@@ -88,8 +101,9 @@ export default function BuddyList() {
       <View style={styles.itemBox}>
       <Pressable onPress={() => {
           const profile = JSON.stringify(item);
-          navigation.navigate("userProfile", { profile })}
-        }>
+          navigation.navigate("userProfile", { profile })
+        }
+      }>
         <View style={styles.listItem}>
         <Avatar size="lg">
           <AvatarFallbackText />

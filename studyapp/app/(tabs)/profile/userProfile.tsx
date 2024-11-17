@@ -29,7 +29,7 @@ interface ProfileObject {
 export default function ProfilePage() {
   const[name, setName] = useState("default");
   const[bio, setBio] = useState("default")
-  const[profilePic, setProfilePic] = useState('');
+  const[profilePic, setProfilePic] = useState('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6LXNJFTmLzCoExghcATlCWG85kI8dsnhJng&s');
   const[detailsList, setDetailsList] = useState<ProfileObject[]>([])
   const { profile } = useLocalSearchParams()
 
