@@ -2,7 +2,8 @@ import { Image, StyleSheet, View, TouchableOpacity } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Plus, Check } from "lucide-react-native";
 import Toast from "react-native-toast-message";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { addBuddy, isBuddy } from "@/scripts";
 
 type Student = {
   name: string;
@@ -20,7 +21,16 @@ const StudentResult = (prop: props) => {
   const { student } = prop;
   const [isRequestSent, setIsRequestSent] = useState(false);
 
-  const sendRequest = (name: string) => {
+  useEffect(() => {
+    const checkBuddy = async () => {
+      const result = await isBuddy(student.name);
+      setIsRequestSent(result);
+    }
+    checkBuddy()
+  }, [])
+
+  const sendRequest = async (name: string) => {
+    await addBuddy(name);
     Toast.show({
       type: "success",
       text1: "Success",
