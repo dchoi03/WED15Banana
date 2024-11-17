@@ -73,6 +73,20 @@ export default function SessionsScreen() {
         </View>
         <View>
           <Text style={styles.ToJoinHeading}>Available To Join</Text>
+          <View style={styles.tasksWrapper}>
+              <View style={styles.taskContainer2}>
+                <Text style={styles.sessionTitle2}>Python Help Session</Text>
+                <Text style={styles.sessionDetails2}>21/12/2024 11:00am - UNSW Law Library</Text>
+              </View>
+              <View style={styles.taskContainer2}>
+                <Text style={styles.sessionTitle2}>COMP3121 Study Session</Text>
+                <Text style={styles.sessionDetails2}>24/12/2024 2:00pm - Online</Text>
+              </View>
+              <View style={styles.taskContainer2}>
+                <Text style={styles.sessionTitle2}>COMP1151 Review</Text>
+                <Text style={styles.sessionDetails2}>29/12/2024 12:30pm - Ainsworth Building</Text>
+              </View>
+            </View>
         </View>
       </ScrollView>
       {/* Create Session Button */}
@@ -175,6 +189,27 @@ const styles = StyleSheet.create({
   sessionDetails: {
     fontSize: 14,
     color: "white",
+    marginTop: 5,
+  },
+  taskContainer2: {
+    padding: 15,
+    backgroundColor: "#A2DDFA",
+    marginVertical: 5,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  sessionTitle2: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#1F1F1F",
+  },
+  sessionDetails2: {
+    fontSize: 14,
+    color: "#1F1F1F",
     marginTop: 5,
   },
 });

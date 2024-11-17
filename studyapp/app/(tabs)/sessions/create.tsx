@@ -37,10 +37,8 @@ export default function CreateSessionScreen() {
   // Validate fields and set error messages if necessary
   const validateFields = () => {
     const newErrors = {};
-    if (!name) newErrors.name = "This field has to be entered";
-    if (!location) newErrors.location = "This field has to be entered";
-    if (!description) newErrors.description = "This field has to be entered";
-    if (!members) newErrors.members = "This field has to be entered";
+    if (!name) newErrors.name = "Session Name Required";
+    if (!location) newErrors.location = "Location Required";
 
     setErrors(newErrors);
     
@@ -50,12 +48,18 @@ export default function CreateSessionScreen() {
     }
   };
 
+  const getInputFieldStyles = (field) => ({
+    height: 45,
+    borderColor: errors[field] ? 'red' : '#ccc',
+    borderWidth: 1,
+    });
+
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
         <VStack space="md">
           <Text style={styles.label}>Session Name</Text>
-          <Input style={{ height: 45 }}>
+          <Input style={getInputFieldStyles('name')}>
             <InputField 
               type="text" 
               placeholder={errors.name ? errors.name : "Enter Session Name"} 
@@ -125,11 +129,11 @@ export default function CreateSessionScreen() {
       <View style={styles.inputContainer}>
         <VStack space="md">
           <Text style={styles.label}>Location</Text>
-          <Input style={{ height: 45 }}>
+          <Input style={getInputFieldStyles('location')}>
             <InputField 
               type="text" 
               placeholder={errors.location ? errors.location : "Enter Location"}
-              placeholderTextColor={errors.location ? "red" : "red"}
+              placeholderTextColor={errors.location ? "red" : "redr"}
               value={location}
               onChangeText={(text) => {
                 setLocation(text);
@@ -146,12 +150,10 @@ export default function CreateSessionScreen() {
           <Input style={styles.descriptionInput}>
             <InputField 
               type="text" 
-              placeholder={errors.description ? errors.description : "Enter Description"}
-              placeholderTextColor={errors.description ? "red" : "#888"}
+              placeholder={"Enter Description"}
               value={description}
               onChangeText={(text) => {
                 setDescription(text);
-                setErrors((prev) => ({ ...prev, description: "" }));
               }}
               multiline={true}
             />
@@ -161,16 +163,14 @@ export default function CreateSessionScreen() {
 
       <View style={styles.inputContainer}>
         <VStack space="md">
-          <Text style={styles.label}>Max Number of Members</Text>
+          <Text style={styles.label}>Max Number of Buddies</Text>
           <Input style={{ height: 45 }}>
             <InputField 
               type="text"
-              placeholder={errors.members ? errors.members : "Enter Max Number of Members"}
-              placeholderTextColor={errors.members ? "red" : "#888"}
+              placeholder={"Enter Max Number of Members"}
               value={members}
               onChangeText={(text) => {
                 setMembers(text);
-                setErrors((prev) => ({ ...prev, members: "" }));
               }}
             />
           </Input>
