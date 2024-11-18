@@ -15,12 +15,49 @@ const formatTime = (timeString) => {
 export default function SessionsScreen() {
   const [selected, setSelected] = useState('');
   const [mySessions, setMySessions] = useState([]);
+  const [viewType, setViewType] = useState("monthly"); // View type state
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]); // Selected date
   const [markedDates, setMarkedDates] = useState({
     '2024-12-03': { customStyles: styles.markedDateContainer },
     '2024-12-14': { customStyles: styles.markedDateContainer },
     '2024-12-29': { customStyles: styles.markedDateContainer },
   });  // State to store marked dates
+  const [availableSessions, setAvailableSessions] = useState([
+    {
+      name: "Python Help Session",
+      date: "2024-12-03",
+      time: "2024-12-03T00:00:00.000Z",
+      location: "UNSW Law Library",
+      description: "Get help with Python assignments",
+      members: 5,
+    },
+    // {
+    //   name: "COMP3121 Study Session",
+    //   date: "2024-12-14",
+    //   time: "2024-12-14T10:00:00.000Z",
+    //   location: "Online",
+    //   description: "Revision for COMP3121 exam",
+    //   members: 10,
+    // },
+    // {
+    //   name: "COMP1151 Review",
+    //   date: "2024-12-29",
+    //   time: "2024-12-29T04:00:00.000Z",
+    //   location: "Ainsworth Building",
+    //   description: "Review concepts for COMP1151",
+    //   members: 8,
+    // },
+  ]);
+  
   const { name, date, time, location, description, members } = useLocalSearchParams();
+
+  const dailySessions = availableSessions.filter((session) => session.date === selectedDate);
+
+  useEffect(() => {
+    if (viewType === "daily") {
+      // Additional logic can go here for daily view
+    }
+  }, [viewType, selectedDate]);
 
   useEffect(() => {
     // If session data is available, add it to the sessions and mark the date on the calendar
@@ -40,10 +77,11 @@ export default function SessionsScreen() {
   return (
     <View style={styles.container}>
       <ScrollView>
+        {/* Select View Toggle */}
         <View style={styles.selectWrapper}>
-          <Select>
+          <Select onValueChange={(value) => setViewType(value)} value={viewType}>
             <SelectTrigger variant="outline" size="md">
-              <SelectInput placeholder="Monthly" />
+              <SelectInput placeholder={viewType === "monthly" ? "Monthly" : "Daily"} />
               <SelectIcon className="mr-3" as={ChevronDownIcon} />
             </SelectTrigger>
             <SelectPortal>
@@ -53,20 +91,41 @@ export default function SessionsScreen() {
                   <SelectDragIndicator />
                 </SelectDragIndicatorWrapper>
                 <SelectItem label="Monthly" value="monthly" />
-                <SelectItem label="Weekly" value="weekly" />
-                <SelectItem label="Today" value="today" />
+                <SelectItem label="Daily" value="daily" />
               </SelectContent>
             </SelectPortal>
           </Select>
         </View>
-        <Calendar
-          style={styles.calendarStyle}
-          onDayPress={(day) => {
-            setSelected(day.dateString);
-          }}
-          markedDates={markedDates}  // Use the markedDates state here
-          markingType={'custom'} // Specify custom marking type
-        />
+
+        {/* Monthly View */}
+        {viewType === "monthly" && (
+          <Calendar
+            style={styles.calendarStyle}
+            onDayPress={(day) => setSelectedDate(day.dateString)}
+            markedDates={markedDates} // Use the markedDates state here
+            markingType="custom" // Specify custom marking type
+          />
+        )}
+
+        {/* Daily View */}
+          {viewType === "daily" && (
+            <View style={styles.dailyView}>
+              <Text style={styles.dailyHeading}>Sessions on {selectedDate}</Text>
+              {dailySessions.length > 0 ? (
+                dailySessions.map((item, idx) => (
+                  <TouchableOpacity key={idx} style={styles.dailyTaskContainer}>
+                    <Text style={styles.dailyTaskTitle}>{item.name}</Text>
+                    <Text style={styles.dailyTaskDetails}>
+                      {formatTime(item.time)} - {item.location}
+                    </Text>
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <Text style={styles.noDailyTasksText}>No sessions available today.</Text>
+              )}
+            </View>
+          )}
+
         <View>
           <Text style={styles.GroupSessionHeading}>Your Group Sessions</Text>
           {mySessions.length === 0 ? (
@@ -75,31 +134,53 @@ export default function SessionsScreen() {
             </View>
           ) : (
             <View style={styles.tasksWrapper}>
-              {mySessions.map(({ name, date, time, location }, idx) => (
-                <View key={idx} style={styles.taskContainer}>
-                  <Text style={styles.sessionTitle}>{name}</Text>
-                  <Text style={styles.sessionDetails}>{formatTime(time)} - {location}</Text>
-                </View>
+              {mySessions.map(({ name, date, time, location, members }, idx) => (
+                <Link
+                  key={idx}
+                  href={{
+                    pathname: "sessions/details",
+                    params: { name, date, time, location, members, idx },
+                  }}
+                  asChild
+                >
+                  <TouchableOpacity style={styles.taskContainer}>
+                    <Text style={styles.sessionTitle}>{name}</Text>
+                    <Text style={styles.sessionDetails}>
+                      {formatTime(time)} - {location}
+                    </Text>
+                  </TouchableOpacity>
+                </Link>
               ))}
             </View>
           )}
         </View>
         <View>
-          <Text style={styles.ToJoinHeading}>Available To Join</Text>
+        <Text style={styles.ToJoinHeading}>Available To Join</Text>
+        {availableSessions.length === 0 ? (
+          <View style={styles.noTasksContainer}>
+          <Text style={styles.noTaskText}>Nothing Available</Text>
+        </View>
+        ) : (
           <View style={styles.tasksWrapper}>
-              <View style={styles.taskContainer2}>
-                <Text style={styles.sessionTitle2}>Python Help Session</Text>
-                <Text style={styles.sessionDetails2}>3/12/2024 11:00am - UNSW Law Library</Text>
-              </View>
-              <View style={styles.taskContainer2}>
-                <Text style={styles.sessionTitle2}>COMP3121 Study Session</Text>
-                <Text style={styles.sessionDetails2}>14/12/2024 2:00pm - Online</Text>
-              </View>
-              <View style={styles.taskContainer2}>
-                <Text style={styles.sessionTitle2}>COMP1151 Review</Text>
-                <Text style={styles.sessionDetails2}>29/12/2024 12:30pm - Ainsworth Building</Text>
-              </View>
-            </View>
+            {availableSessions.map(({ name, date, time, location, description, members }, idx) => (
+              <Link
+                key={idx}
+                href={{
+                  pathname: "sessions/details",
+                  params: { name, date, time, location, description, members, idx },
+                }}
+                asChild
+              >
+                <TouchableOpacity style={styles.taskContainer2}>
+                  <Text style={styles.sessionTitle2}>{name}</Text>
+                  <Text style={styles.sessionDetails2}>
+                    {formatTime(time)} - {location}
+                  </Text>
+                </TouchableOpacity>
+              </Link>
+            ))}
+          </View>
+        )}
         </View>
       </ScrollView>
       
@@ -195,6 +276,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 2,
+    borderWidth: 2, // Add border width
+    borderColor: "#C2C2C2", // Add border color
   },
   sessionTitle: {
     fontSize: 16,
@@ -214,8 +297,10 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
-    shadowRadius: 2,
+    shadowRadius: 5,
     elevation: 2,
+    borderWidth: 2, // Add border width
+    borderColor: "#C2C2C2", // Add border color
   },
   sessionTitle2: {
     fontSize: 16,
@@ -241,5 +326,53 @@ const styles = StyleSheet.create({
       backgroundColor: '#088DCD',
       borderRadius: 5,
     }
+  },
+  dailyView: {
+    flex: 1, // Take up remaining space
+    padding: 10,
+    backgroundColor: "#f9f9f9",
+    marginHorizontal: 25,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    marginVertical: 40,
+    paddingBottom: 150,
+    paddingTop: 25,
+  },
+  dailyHeading: {
+    alignSelf: 'center',
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#05405D",
+    marginBottom: 10,
+  },
+  dailyTaskContainer: {
+    backgroundColor: "#E8F5FE",
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#BCE0FD",
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  dailyTaskTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#1F1F1F",
+  },
+  dailyTaskDetails: {
+    fontSize: 14,
+    color: "#4F4F4F",
+    marginTop: 5,
+  },
+  noDailyTasksText: {
+    fontSize: 16,
+    color: "gray",
+    textAlign: "center",
+    marginTop: 20,
   },
 });
