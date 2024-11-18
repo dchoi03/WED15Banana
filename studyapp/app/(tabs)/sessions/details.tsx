@@ -1,6 +1,6 @@
-import { Text, View, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { useEffect } from 'react';
+import { useState } from "react";
 
 // Format function for displaying time
 const formatTime = (timeString) => {
@@ -9,8 +9,14 @@ const formatTime = (timeString) => {
 };
 
 export default function DetailsScreen() {
-  const { name, date, time, location, description, members, idx } = useLocalSearchParams();
+  const { name, date, time, location, description, members, idx, isJoined } = useLocalSearchParams();
+  const navigation = useNavigation();
 
+  const handleJoinLeave = () => {
+    const updatedIsJoined = !isJoined;
+    navigation.navigate("index", { name, date, time, location, description, members, idx, isJoined: updatedIsJoined, })
+  };
+  
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
@@ -32,43 +38,81 @@ export default function DetailsScreen() {
             Members {members ? `2/${members}` : "(Open Session)"}
           </Text>
         </View>
+
+        {/* Join/Leave Button */}
+        <View style={styles.buttonContainer}>
+          {!isJoined ? (
+            <TouchableOpacity style={styles.joinButton} onPress={handleJoinLeave}>
+              <Text style={styles.buttonText}>Join</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.leaveButton} onPress={handleJoinLeave}>
+              <Text style={styles.buttonText}>Leave</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </ScrollView>
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    flex: 100,
+    flex: 1,
+    padding: 20,
   },
 
   heading: {
     color: "#05405D",
     fontWeight: "bold",
     fontSize: 24,
-    margin: 20
+    marginBottom: 20,
   },
 
   subHeading: {
     color: "#05405D",
     fontWeight: "bold",
     fontSize: 20,
-    margin: 20,
+    marginTop: 20,
   },
 
   textContainer: {
-    marginHorizontal: 20,
+    marginVertical: 10,
     fontSize: 18,
   },
 
   scrollView: {
     flex: 1,
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
 
   scrollViewContent: {
-    backgroundColor: "white",
+    paddingBottom: 20,
+  },
+
+  buttonContainer: {
+    marginTop: 30,
+    alignItems: "center",
+  },
+
+  joinButton: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 5,
+  },
+
+  leaveButton: {
+    backgroundColor: "#F44336",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 5,
+  },
+
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

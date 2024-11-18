@@ -15,6 +15,7 @@ export default function CreateSessionScreen() {
   const [members, setMembers] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [isJoined, setIsJoined] = useState(true);
 
   const [errors, setErrors] = useState({}); // State for validation errors
 
@@ -44,7 +45,7 @@ export default function CreateSessionScreen() {
     
     // If no errors, navigate to the next screen
     if (Object.keys(newErrors).length === 0) {
-      navigation.navigate("index", { name, date: date.toISOString(), time: time.toISOString(), location, description, members });
+      navigation.navigate("index", { name, date: date.toISOString(), time: time.toISOString(), location, description, members, isJoined });
     }
   };
 

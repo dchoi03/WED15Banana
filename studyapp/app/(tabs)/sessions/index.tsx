@@ -30,6 +30,7 @@ export default function SessionsScreen() {
       location: "UNSW Law Library",
       description: "Get help with Python assignments",
       members: 5,
+      isJoined: false,
     },
     // {
     //   name: "COMP3121 Study Session",
@@ -49,7 +50,7 @@ export default function SessionsScreen() {
     // },
   ]);
   
-  const { name, date, time, location, description, members } = useLocalSearchParams();
+  const { name, date, time, location, description, members, isJoined } = useLocalSearchParams();
 
   const dailySessions = availableSessions.filter((session) => session.date === selectedDate);
 
@@ -134,7 +135,7 @@ export default function SessionsScreen() {
             </View>
           ) : (
             <View style={styles.tasksWrapper}>
-              {mySessions.map(({ name, date, time, location, members }, idx) => (
+              {mySessions.map(({ name, date, time, location, members, isJoined }, idx) => (
                 <Link
                   key={idx}
                   href={{
@@ -162,7 +163,7 @@ export default function SessionsScreen() {
         </View>
         ) : (
           <View style={styles.tasksWrapper}>
-            {availableSessions.map(({ name, date, time, location, description, members }, idx) => (
+            {availableSessions.map(({ name, date, time, location, description, members, isJoined }, idx) => (
               <Link
                 key={idx}
                 href={{
