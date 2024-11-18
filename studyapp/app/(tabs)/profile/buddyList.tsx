@@ -43,8 +43,6 @@ export default function BuddyList() {
         { id: '5', title: "Grade", content: "3rd Year"} ,
         { id: '6', title: "Current Courses", content: "default" },
         { id: '7', title: "Goals", content: "Find friends make enemies" },
-        { id: '8', title: "Contact", content: "000 0000 0000" },
-        { id: '9', title: "Email", content: "Fiaoesfe@gasem.com" },
         { id: '10', title: "Bio", content: "Im so cool" },
         { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" }
       ],
@@ -56,8 +54,6 @@ export default function BuddyList() {
         { id: '5', title: "Grade", content: "3rd Year"} ,
         { id: '6', title: "Current Courses", content: "default" },
         { id: '7', title: "Goals", content: "Find friends make enemies" },
-        { id: '8', title: "Contact", content: "000 0000 0000" },
-        { id: '9', title: "Email", content: "Fiaoesfe@gasem.com" },
         { id: '10', title: "Bio", content: "Im so cool" },
         { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" }
       ],
@@ -69,8 +65,6 @@ export default function BuddyList() {
         { id: '5', title: "Grade", content: "3rd Year"} ,
         { id: '6', title: "Current Courses", content: "default" },
         { id: '7', title: "Goals", content: "Find friends make enemies" },
-        { id: '8', title: "Contact", content: "000 0000 0000" },
-        { id: '9', title: "Email", content: "Fiaoesfe@gasem.com" },
         { id: '10', title: "Bio", content: "Im so cool" },
         { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" }
       ]

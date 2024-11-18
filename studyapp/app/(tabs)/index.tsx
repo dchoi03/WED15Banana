@@ -1,7 +1,7 @@
 import { Image, StyleSheet, View, ScrollView } from "react-native";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ButtonIcon, ButtonText, Button } from "@/components/ui/button";
 import { Badge, BadgeText, BadgeIcon } from "@/components/ui/badge";
 import {
@@ -13,6 +13,10 @@ import {
   Star,
 } from "lucide-react-native";
 import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
+const PROFILE_KEY = "@profile"
 
 const sampleStudents = [
   {
@@ -43,6 +47,28 @@ const sampleStudents = [
 ];
 
 export default function HomeScreen() {
+
+  useEffect(() => {
+    const saveDetails = async () => {
+      await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify([ 
+        { id: '1', title: "Username", content: "George" },
+        { id: '2', title: "name", content: "Gerorge pollix" },
+        { id: '3', title: "education", content: "sadf" },
+        { id: '4', title: "University", content: "UNSW" },
+        { id: '5', title: "Grade", content: "3rd Year"} ,
+        { id: '6', title: "Current Courses", content: "Comp 4511" },
+        { id: '7', title: "Goals", content: "Find friends make enemies" },
+        { id: '8', title: "Contact", content: "000 0000 0000" },
+        { id: '9', title: "Email", content: "Fiaoesfe@gasem.com" },
+        { id: '10', title: "Bio", content: "Im so cool. This is a fire app. lorem ipsum dipsum deloreajfnf afaidshfa fasdnfkadbsf adbfadbfasldfbjadbsl" },
+        { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" },
+      ]))
+    }
+    saveDetails();
+
+  }, [])
+
+
   const [studentNumber, setStudentNumber] = useState(0);
   const MAXSTUDENTS = sampleStudents.length;
 

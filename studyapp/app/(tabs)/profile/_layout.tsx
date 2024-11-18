@@ -4,8 +4,9 @@ export default function ProfileLayout() {
   return (
       <Stack initialRouteName="index">
         <Stack.Screen name="index"  options ={{ 
-                title: "Profile", 
+                title: "Your Profile", 
                 headerTintColor: '#007AFF',
+                headerTitleAlign: "center",
                 }} />
         <Stack.Screen name="editProfile"  options ={{ 
                 title: "Edit Profile", 
