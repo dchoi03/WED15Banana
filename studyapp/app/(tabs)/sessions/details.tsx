@@ -1,23 +1,55 @@
 import { Text, View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useState } from "react";
+import Toast from "react-native-toast-message";
 
-// Format function for displaying time
 const formatTime = (timeString) => {
   const time = new Date(timeString);
   return `${time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
 };
 
 export default function DetailsScreen() {
-  const { name, date, time, location, description, members, idx, isJoined, membersInfo: rawMembersInfo } = useLocalSearchParams();
+  const {
+    name,
+    date,
+    time,
+    location,
+    description,
+    members,
+    idx,
+    isJoined: initialIsJoined,
+    membersInfo: rawMembersInfo,
+  } = useLocalSearchParams();
+
+  const [isJoined, setIsJoined] = useState(initialIsJoined === "true" || initialIsJoined === true);
   const navigation = useNavigation();
   const membersInfo = rawMembersInfo ? JSON.parse(rawMembersInfo) : [];
-  
+
   const handleJoinLeave = () => {
     const updatedIsJoined = !isJoined;
-    navigation.navigate("index", { name, date, time, location, description, members, idx, isJoined: updatedIsJoined, })
+    setIsJoined(updatedIsJoined); // Update local state
+
+    // Show Toast notification
+    Toast.show({
+      type: "info",
+      text1: updatedIsJoined ? "Joined Group" : "Left Group",
+      text2: `You have ${updatedIsJoined ? "joined" : "left"} the session "${name}".`,
+    });
+
+    // Navigate back to index with updated session data
+    navigation.navigate("index", {
+      idx,
+      name,
+      date,
+      time,
+      location,
+      description,
+      members,
+      isJoined: updatedIsJoined,
+      membersInfo: JSON.stringify(membersInfo),
+    });
   };
-  
+
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>

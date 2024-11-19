@@ -5,6 +5,7 @@ import { Input, InputField } from "@/components/ui/input";
 import { VStack } from "@/components/ui/vstack";
 import { Button, ButtonText } from "@/components/ui/button";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import Toast from "react-native-toast-message";
 
 export default function CreateSessionScreen() {
   const [name, setName] = useState("");
@@ -15,7 +16,7 @@ export default function CreateSessionScreen() {
   const [members, setMembers] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [isJoined, setIsJoined] = useState(false);
+  const [isJoined, setIsJoined] = useState(true);
   const [errors, setErrors] = useState({}); // State for validation errors
   const [membersInfo, setMembersInfo] = useState([]);
   const navigation = useNavigation();
@@ -34,31 +35,37 @@ export default function CreateSessionScreen() {
     }
   };
 
-  // Validate fields and set error messages if necessary
   const validateFields = () => {
     const newErrors = {};
     if (!name) newErrors.name = "Session Name Required";
     if (!location) newErrors.location = "Location Required";
 
     setErrors(newErrors);
-    
-    // If no errors, navigate to the next screen
+
     if (Object.keys(newErrors).length === 0) {
-      navigation.navigate(
-        "index", 
-        { name, 
-          date: date.toISOString(), 
-          time: time.toISOString(), 
-          location, 
-          description, 
-          members, 
-          isJoined: true, 
-          membersInfo: [
-            { memberName: "Name",
-               memberProfilePic: "ProfilePic" 
-            }
-          ] 
-        });
+      // Show success toast
+      Toast.show({
+        type: "success",
+        text1: "Session Created",
+        text2: `Your session "${name}" has been created!`,
+      });
+
+      // Navigate back to index
+      navigation.navigate("index", {
+        name,
+        date: date.toISOString(),
+        time: time.toISOString(),
+        location,
+        description,
+        members,
+        isJoined: true,
+        membersInfo: [
+          {
+            memberName: "Name",
+            memberProfilePic: "ProfilePic",
+          },
+        ],
+      });
     }
   };
 
