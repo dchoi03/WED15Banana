@@ -156,15 +156,16 @@ const styles = StyleSheet.create({
     alignContent: "space-evenly",
     alignSelf: "stretch",
     fontSize: 20,
-    width: 300,
+    width: 320,
   },
   listTitle: {
-    width: 120,
+    width: 140,
     fontWeight: "bold",
     paddingBottom: 10,
-    fontSize: 15,
+    fontSize: 16,
   },
   bioText: {
+    alignSelf: "center",
     width: 250,
     marginBottom: 20
   }, 

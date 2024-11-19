@@ -20,8 +20,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from '@react-navigation/native';
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { Box } from "@/components/ui/box";
+import { SunIcon } from "@/components/ui/icon"
 
 const PROFILE_KEY = "@profile"
+const COLOUR_MODE = "@colorMode";
 
 interface ProfileObject {
   id: string,
@@ -44,9 +46,17 @@ export default function ProfilePage() {
     }
   }
 
+  const getColourMode = async () => {
+    const storedColorMode = await AsyncStorage.getItem(COLOUR_MODE);
+    if (storedColorMode) {
+      setColorMode(storedColorMode as "light" | "dark");
+    }
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       getUserProfile();
+      getColourMode();
     }, [])
   );
 
@@ -66,11 +76,29 @@ export default function ProfilePage() {
     setDetailsList(updDetailslist);
   }, [profile]);
 
+  const setPageColours = async () => {
+    const newColor = colorMode === "light" ? "dark" : "light"
+    setColorMode(newColor)
+    await AsyncStorage.setItem(COLOUR_MODE, newColor);
+  }
+
   const navigation = useNavigation();
+  const isDarkMode = colorMode === "dark";
+
   return (
-    <ThemedView style={styles.container}>
-      <ThemedView style={styles.padder}/>
-        <ThemedView style={styles.subContainer}>
+    <GluestackUIProvider mode={colorMode} >
+    <ThemedView  style={[styles.container, isDarkMode && styles.darkContainer]}>
+      <ThemedView style={[styles.padder, isDarkMode && styles.darkContainer ]}/>
+        <Box style={styles.relativeButton}>
+        <Button
+          onPress={() => {
+            setPageColours();
+          }}
+        >
+          <ButtonIcon as={SunIcon}></ButtonIcon>
+        </Button>
+      </Box>
+        <ThemedView style={[styles.subContainer, isDarkMode && styles.darkContainer]}>
           <Avatar size="2xl">
           <AvatarFallbackText>No Image</AvatarFallbackText>
             <AvatarImage     
@@ -78,10 +106,10 @@ export default function ProfilePage() {
                uri: profilePic,
             }}/>
           </Avatar>
-        <ThemedText style={styles.nameText}>{name}</ThemedText>
+        <ThemedText style={[styles.nameText, isDarkMode && styles.darkText]}>{name}</ThemedText>
         <View style={styles.scroller}>
           <ScrollView >
-            <ThemedText style={styles.bioText}>{bio}</ThemedText>
+            <ThemedText style={[styles.bioText, isDarkMode && styles.darkText]}>{bio}</ThemedText>
           </ScrollView>
         </View>
         <ButtonGroup style={styles.buttonGroup} >
@@ -92,21 +120,22 @@ export default function ProfilePage() {
           <ButtonText>Edit Profile</ButtonText>
           </Button>
         </ButtonGroup>
-        <ThemedView style={styles.detailsContainer}>
-          <ThemedText style={styles.nameText}>Your Details</ThemedText>
+        <ThemedView style={[styles.detailsContainer,  isDarkMode && styles.darkContainer]}>
+          <ThemedText style={[styles.nameText, isDarkMode && styles.darkText]}>Your Details</ThemedText>
           <FlatList
             data={detailsList}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.listItem}>
-              <Text style={styles.listTitle}>{item.title}</Text>
-              <Text>{item.content}</Text>
+              <Text style={[styles.listTitle, isDarkMode && styles.darkText]}>{item.title}</Text>
+              <Text style={isDarkMode ? styles.darkText : undefined}>{item.content}</Text>
               </View>
             )}
           />
         </ThemedView>
         </ThemedView>
     </ThemedView>
+    </GluestackUIProvider>
   );
 }
 
@@ -134,6 +163,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: "flex-start",
+    backgroundColor: '#ffffff',
   },
   padder: {
     height: 30,
@@ -148,6 +178,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     paddingBottom: 30,
   }, 
+  darkText: {
+    color: '#fff',
+  },
+  darkContainer: {
+    backgroundColor: '#000000',
+  },
   nameText: {
     fontWeight: "bold", 
     paddingBottom: 20,
@@ -183,5 +219,17 @@ const styles = StyleSheet.create({
   scroller: {
     height: 120,
     width: 300,
-  }
+  }, 
+  toggleBox: {
+    width: 20,
+    height: 20,
+    margin: 0,
+    padding: 0,
+  }, 
+    relativeButton: {
+      position: "absolute",
+      width: 30,
+      height: 30,
+      marginLeft: 375
+  } 
 });

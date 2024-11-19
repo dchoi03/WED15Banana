@@ -17,7 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const PROFILE_KEY = "@profile"
-
+const BUDDY_LIST = "@Buddy"
 const sampleStudents = [
   {
     name: "Ava",
@@ -53,19 +53,56 @@ export default function HomeScreen() {
       await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify([ 
         { id: '1', title: "Username", content: "George" },
         { id: '2', title: "name", content: "Gerorge pollix" },
-        { id: '3', title: "education", content: "sadf" },
-        { id: '4', title: "University", content: "UNSW" },
-        { id: '5', title: "Grade", content: "3rd Year"} ,
-        { id: '6', title: "Current Courses", content: "Comp 4511" },
-        { id: '7', title: "Goals", content: "Find friends make enemies" },
+        { id: '3', title: "education", content: "Unspecified" },
+        { id: '4', title: "University", content: "Unspecified" },
+        { id: '5', title: "Grade", content: "Unspecified"} ,
+        { id: '6', title: "Current Courses", content: "Unspecified" },
+        { id: '7', title: "Goals", content: "Unspecified" },
         { id: '8', title: "Contact", content: "000 0000 0000" },
         { id: '9', title: "Email", content: "Fiaoesfe@gasem.com" },
-        { id: '10', title: "Bio", content: "Im so cool. This is a fire app. lorem ipsum dipsum deloreajfnf afaidshfa fasdnfkadbsf adbfadbfasldfbjadbsl" },
-        { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" },
+        { id: '10', title: "Bio", content: "Hi, Im new to StuddyBud. Its nice to meet you!" },
+        { id: '11', title: "ProfilePic", content: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6LXNJFTmLzCoExghcATlCWG85kI8dsnhJng&s" },
       ]))
     }
     saveDetails();
-
+    const saveBuddyList = async () => {
+      await AsyncStorage.setItem(BUDDY_LIST, JSON.stringify([
+          [ 
+            { id: '1', title: "Username", content: "George123" },
+            { id: '2', title: "name", content: "Gerorge pollix" },
+            { id: '3', title: "education", content: "Bachelors" },
+            { id: '4', title: "University", content: "UNSW" },
+            { id: '5', title: "Grade", content: "3rd Year"} ,
+            { id: '6', title: "Current Courses", content: "Comp 4511, Comp 2381" },
+            { id: '7', title: "Goals", content: "Become better at UI design" },
+            { id: '10', title: "Bio", content: "Hi there! Im George and I like skiing, whittling and playing hockey" },
+            { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" }
+          ],
+          [ 
+            { id: '1', title: "Username", content: "PaulineUp" },
+            { id: '2', title: "name", content: "Pauline Sanders" },
+            { id: '3', title: "education", content: "Masters" },
+            { id: '4', title: "University", content: "USYD" },
+            { id: '5', title: "Grade", content: "1st Year"} ,
+            { id: '6', title: "Current Courses", content: "Comp 2321, DART 7070" },
+            { id: '7', title: "Goals", content: "Become a mining engineer" },
+            { id: '10', title: "Bio", content: "Hi there! Im Pauline and I am a junior analyst at Google data services" },
+            { id: '11', title: "ProfilePic", content: "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?cs=srgb&dl=pexels-olly-733872.jpg&fm=jpg" }
+          ],
+          [ 
+            { id: '1', title: "Username", content: "Grefe42123" },
+            { id: '2', title: "name", content: "gerefe pollix" },
+            { id: '3', title: "education", content: "Post Graduate" },
+            { id: '4', title: "University", content: "UNSW" },
+            { id: '5', title: "Grade", content: "2nd Year"} ,
+            { id: '6', title: "Current Courses", content: "unspecified" },
+            { id: '7', title: "Goals", content: "Find friends make enemies" },
+            { id: '10', title: "Bio", content: "Drinking coffee since 2010" },
+            { id: '11', title: "ProfilePic", content: "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/flat-white-3402c4f.jpg" }
+          ]
+      ]))
+    }
+    saveBuddyList();
   }, [])
 
 

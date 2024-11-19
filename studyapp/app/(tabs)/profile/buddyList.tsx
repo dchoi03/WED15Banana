@@ -1,3 +1,4 @@
+import React from 'react';
 import { Image, StyleSheet, Platform, Text, FlatList, View, Pressable } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -16,11 +17,14 @@ import {
 } from "@/components/ui/avatar"
 import { useState, useEffect } from 'react';
 import { useNavigation } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
 import { Input, InputField  } from "@/components/ui/input"
 import { Textarea, TextareaInput } from "@/components/ui/textarea"
 import { StackNavigationProp } from '@react-navigation/stack';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { Bold } from 'lucide-react-native';
+const COLOUR_MODE = "@colorMode";
 const BUDDY_LIST = "@Buddy"
 
 export type RootStackParamList = {
@@ -33,53 +37,32 @@ interface ProfileObject {
   content: string
 }
 
-export default function BuddyList() {
-    const[details, setDetails] = useState([
-      [ 
-        { id: '1', title: "Username", content: "George" },
-        { id: '2', title: "name", content: "Gerorge pollix" },
-        { id: '3', title: "education", content: "sadf" },
-        { id: '4', title: "University", content: "UNSW" },
-        { id: '5', title: "Grade", content: "3rd Year"} ,
-        { id: '6', title: "Current Courses", content: "default" },
-        { id: '7', title: "Goals", content: "Find friends make enemies" },
-        { id: '10', title: "Bio", content: "Im so cool" },
-        { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" }
-      ],
-      [ 
-        { id: '1', title: "Username", content: "ahdsed" },
-        { id: '2', title: "name", content: "brsf fsaf pollix" },
-        { id: '3', title: "education", content: "sadf" },
-        { id: '4', title: "University", content: "UNSW" },
-        { id: '5', title: "Grade", content: "3rd Year"} ,
-        { id: '6', title: "Current Courses", content: "default" },
-        { id: '7', title: "Goals", content: "Find friends make enemies" },
-        { id: '10', title: "Bio", content: "Im so cool" },
-        { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" }
-      ],
-      [ 
-        { id: '1', title: "Username", content: "beftsa" },
-        { id: '2', title: "name", content: "gerefe pollix" },
-        { id: '3', title: "education", content: "sadf" },
-        { id: '4', title: "University", content: "UNSW" },
-        { id: '5', title: "Grade", content: "3rd Year"} ,
-        { id: '6', title: "Current Courses", content: "default" },
-        { id: '7', title: "Goals", content: "Find friends make enemies" },
-        { id: '10', title: "Bio", content: "Im so cool" },
-        { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" }
-      ]
-      ])
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  useEffect(() => {
-  const getUserProfile = async () => {
+export default function BuddyList() {
+    const[details, setDetails] = useState<ProfileObject[][]>([])
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const [colorMode, setColorMode] = useState<"light" | "dark">("light");
+
+  const storeBuddies = async () => {
+    await AsyncStorage.setItem(BUDDY_LIST, JSON.stringify(details));
+  };
+  const getBuddies = async () => {
     const storedLists = await AsyncStorage.getItem(BUDDY_LIST)
     if (storedLists != null) {
       setDetails(JSON.parse(storedLists));
     }
   }
-  getUserProfile();
-}, []);
+  
+
+  useFocusEffect(
+  React.useCallback(() => {
+    getBuddies();
+  }, [])
+  );
+
+  useEffect(() => {
+    storeBuddies()
+  }, [details])
 
   const unBuddy = (index: string) => {
     setDetails(details.filter((curEn) => {
@@ -92,6 +75,7 @@ export default function BuddyList() {
     const avatar = item.find((obj) => obj.title === 'ProfilePic')?.content || '';
 
     return (
+      <GluestackUIProvider mode={colorMode}>
       <View style={styles.itemBox}>
       <Pressable onPress={() => {
           const profile = JSON.stringify(item);
@@ -113,6 +97,7 @@ export default function BuddyList() {
       </View>
     </Pressable>
     </View>
+    </GluestackUIProvider>
     )
   }
 
@@ -121,6 +106,12 @@ export default function BuddyList() {
         <ThemedView style={styles.subContainer}>
           <FlatList
             data={details}
+            ListEmptyComponent={
+              <View style={styles.noBuddyBox}>
+                <Text style={styles.noBuddyText}>No Buddies</Text>
+                <Text>Find some in the search tab!</Text>
+              </View>
+            }
             keyExtractor={(item, index) => `${index}-${item[0].content}`}
             renderItem={renderItem}
           />
@@ -170,6 +161,15 @@ const styles = StyleSheet.create({
   },
   itemBox: {
     width: 350
+  },
+  noBuddyText: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  noBuddyBox: {
+    alignSelf: "center",
+    alignItems: "center",
+    marginTop: 40,
   }
 });
 
