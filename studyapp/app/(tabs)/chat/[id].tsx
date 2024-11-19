@@ -117,10 +117,13 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         alignItems: 'center',
         padding: 10,
+
     },
     container: {
         backgroundColor: '#fff',
         flex: 1,
+        paddingTop: 16,
+
     },
     sentText: {
         color: '#fff',
