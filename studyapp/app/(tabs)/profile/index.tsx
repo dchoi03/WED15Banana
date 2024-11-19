@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {
@@ -15,12 +15,15 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar"
 import { useNavigation } from 'expo-router';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from '@react-navigation/native';
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { Box } from "@/components/ui/box";
+import { SunIcon } from "@/components/ui/icon"
 
 const PROFILE_KEY = "@profile"
+const COLOUR_MODE = "@colorMode";
 
 interface ProfileObject {
   id: string,
@@ -35,33 +38,27 @@ export default function ProfilePage() {
   const[detailsList, setDetailsList] = useState<ProfileObject[]>([])
   const[profile, setProfile] = useState<ProfileObject[]>([])
   const [colorMode, setColorMode] = useState<"light" | "dark">("light");
-  useEffect(() => {
 
-    const saveDetails = async () => {
-      await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify([ 
-        { id: '1', title: "Username", content: "George" },
-        { id: '2', title: "name", content: "Gerorge pollix" },
-        { id: '3', title: "education", content: "sadf" },
-        { id: '4', title: "University", content: "UNSW" },
-        { id: '5', title: "Grade", content: "3rd Year"} ,
-        { id: '6', title: "Current Courses", content: "Comp 4511" },
-        { id: '7', title: "Goals", content: "Find friends make enemies" },
-        { id: '8', title: "Contact", content: "000 0000 0000" },
-        { id: '9', title: "Email", content: "Fiaoesfe@gasem.com" },
-        { id: '10', title: "Bio", content: "Im so cool. This is a fire app. lorem ipsum dipsum deloreajfnf afaidshfa fasdnfkadbsf adbfadbfasldfbjadbsl" },
-        { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" },
-      ]))
+  const getUserProfile = async () => {
+    const storedLists = await AsyncStorage.getItem(PROFILE_KEY)
+    if (storedLists != null) {
+      setProfile(JSON.parse(storedLists));
     }
-    saveDetails();
+  }
 
-    const getUserProfile = async () => {
-      const storedLists = await AsyncStorage.getItem(PROFILE_KEY)
-      if (storedLists != null) {
-        setProfile(JSON.parse(storedLists));
-      }
+  const getColourMode = async () => {
+    const storedColorMode = await AsyncStorage.getItem(COLOUR_MODE);
+    if (storedColorMode) {
+      setColorMode(storedColorMode as "light" | "dark");
     }
-    getUserProfile();
-  }, []);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getUserProfile();
+      getColourMode();
+    }, [])
+  );
 
   useEffect(() => {
     const updDetailslist = []
@@ -79,44 +76,66 @@ export default function ProfilePage() {
     setDetailsList(updDetailslist);
   }, [profile]);
 
+  const setPageColours = async () => {
+    const newColor = colorMode === "light" ? "dark" : "light"
+    setColorMode(newColor)
+    await AsyncStorage.setItem(COLOUR_MODE, newColor);
+  }
+
   const navigation = useNavigation();
+  const isDarkMode = colorMode === "dark";
+
   return (
-    <ThemedView style={styles.container}>
-      <ThemedView style={styles.padder}/>
-        <ThemedView style={styles.subContainer}>
-        <ThemedText style={styles.yourProfile}>Your Profile</ThemedText>
+    <GluestackUIProvider mode={colorMode} >
+    <ThemedView  style={[styles.container, isDarkMode && styles.darkContainer]}>
+      <ThemedView style={[styles.padder, isDarkMode && styles.darkContainer ]}/>
+        <Box style={styles.relativeButton}>
+        <Button
+          onPress={() => {
+            setPageColours();
+          }}
+        >
+          <ButtonIcon as={SunIcon}></ButtonIcon>
+        </Button>
+      </Box>
+        <ThemedView style={[styles.subContainer, isDarkMode && styles.darkContainer]}>
           <Avatar size="2xl">
-            <AvatarFallbackText />
+          <AvatarFallbackText>No Image</AvatarFallbackText>
             <AvatarImage     
             source={{
                uri: profilePic,
             }}/>
           </Avatar>
-        <ThemedText style={styles.nameText}>{name}</ThemedText>
-        <ThemedText style={styles.bioText}>{bio}</ThemedText>
-        <ButtonGroup >
-          <Button style={styles.button} action="primary" onPress={() => navigation.navigate('buddyList' as never)}>
+        <ThemedText style={[styles.nameText, isDarkMode && styles.darkText]}>{name}</ThemedText>
+        <View style={styles.scroller}>
+          <ScrollView >
+            <ThemedText style={[styles.bioText, isDarkMode && styles.darkText]}>{bio}</ThemedText>
+          </ScrollView>
+        </View>
+        <ButtonGroup style={styles.buttonGroup} >
+          <Button style={styles.button} size="lg" action="primary" onPress={() => navigation.navigate('buddyList' as never)}>
           <ButtonText>Buddies</ButtonText>
           </Button >
-          <Button style={styles.button} onPress={() => navigation.navigate('editProfile' as never)}>
+          <Button style={styles.button} size="lg" onPress={() => navigation.navigate('editProfile' as never)}>
           <ButtonText>Edit Profile</ButtonText>
           </Button>
         </ButtonGroup>
-        <ThemedView style={styles.detailsContainer}>
-          <ThemedText style={styles.nameText}>Your Details</ThemedText>
+        <ThemedView style={[styles.detailsContainer,  isDarkMode && styles.darkContainer]}>
+          <ThemedText style={[styles.nameText, isDarkMode && styles.darkText]}>Your Details</ThemedText>
           <FlatList
             data={detailsList}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.listItem}>
-              <Text style={styles.listTitle}>{item.title}</Text>
-              <Text>{item.content}</Text>
+              <Text style={[styles.listTitle, isDarkMode && styles.darkText]}>{item.title}</Text>
+              <Text style={isDarkMode ? styles.darkText : undefined}>{item.content}</Text>
               </View>
             )}
           />
         </ThemedView>
         </ThemedView>
     </ThemedView>
+    </GluestackUIProvider>
   );
 }
 
@@ -130,8 +149,8 @@ const styles = StyleSheet.create({
   detailsContainer: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 30,
-    width: 350,
+    paddingTop: 20,
+    width: 380,
   },
   reactLogo: {
     height: 178,
@@ -144,43 +163,74 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: "flex-start",
+    backgroundColor: '#ffffff',
   },
   padder: {
-    height: 40,
-    backgroundColor: "light-blue"
+    height: 30,
   }, 
   subContainer: {
     flex: 1,
     alignItems: "center",
   },
   yourProfile: {
-    fontFamily: "roboto",
     fontSize: 20,
     color: "#007AFF",
     fontWeight: "bold",
     paddingBottom: 30,
   }, 
+  darkText: {
+    color: '#fff',
+  },
+  darkContainer: {
+    backgroundColor: '#000000',
+  },
   nameText: {
     fontWeight: "bold", 
-    paddingBottom: 20
+    paddingBottom: 20,
+    fontSize: 20,
   },
   button: {
     backgroundColor: "#007AFF",
     color: "#007AFF",
   },
+  buttonGroup: {
+    marginTop: 20,
+    marginBottom: 10,
+    width: 220,
+  },
   listItem: {
     flexDirection: "row",
     justifyContent: "flex-start",
     alignContent: "space-evenly",
-    alignSelf: "stretch"
+    alignSelf: "stretch",
+    fontSize: 20,
+    width: 300,
   },
   listTitle: {
     width: 100,
     fontWeight: "bold",
     paddingBottom: 10,
+    fontSize: 15,
   },
   bioText: {
+    alignSelf: "center",
     width: 250,
     marginBottom: 20
-  }
+  }, 
+  scroller: {
+    height: 120,
+    width: 300,
+  }, 
+  toggleBox: {
+    width: 20,
+    height: 20,
+    margin: 0,
+    padding: 0,
+  }, 
+    relativeButton: {
+      position: "absolute",
+      width: 30,
+      height: 30,
+      marginLeft: 375
+  } 
 });

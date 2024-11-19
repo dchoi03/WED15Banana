@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {
@@ -75,7 +75,11 @@ export default function ProfilePage() {
             }}/>
           </Avatar>
         <ThemedText style={styles.nameText}>{name}</ThemedText>
-        <ThemedText style={styles.bioText}>{bio}</ThemedText>
+        <View style={styles.scroller}>
+          <ScrollView >
+            <ThemedText style={styles.bioText}>{bio}</ThemedText>
+          </ScrollView>
+        </View>
         <ThemedView style={styles.detailsContainer}>
           <ThemedText style={styles.nameText}>Details</ThemedText>
           <FlatList
@@ -104,8 +108,8 @@ const styles = StyleSheet.create({
   detailsContainer: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 30,
-    width: 350,
+    paddingTop: 20,
+    width: 380,
   },
   reactLogo: {
     height: 178,
@@ -120,15 +124,13 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   padder: {
-    height: 40,
-    backgroundColor: "light-blue"
+    height: 30,
   }, 
   subContainer: {
     flex: 1,
     alignItems: "center",
   },
   yourProfile: {
-    fontFamily: "roboto",
     fontSize: 20,
     color: "#007AFF",
     fontWeight: "bold",
@@ -137,26 +139,38 @@ const styles = StyleSheet.create({
   nameText: {
     fontWeight: "bold", 
     paddingBottom: 20,
-    color: "#007AFF",
+    fontSize: 20,
   },
   button: {
     backgroundColor: "#007AFF",
     color: "#007AFF",
   },
+  buttonGroup: {
+    marginTop: 20,
+    marginBottom: 10,
+    width: 220,
+  },
   listItem: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "flex-start",
     alignContent: "space-evenly",
-    alignSelf: "stretch"
+    alignSelf: "stretch",
+    fontSize: 20,
+    width: 320,
   },
   listTitle: {
-    width: 100,
+    width: 140,
     fontWeight: "bold",
     paddingBottom: 10,
+    fontSize: 16,
   },
   bioText: {
+    alignSelf: "center",
     width: 250,
     marginBottom: 20
+  }, 
+  scroller: {
+    height: 120,
+    width: 300,
   }
 });
