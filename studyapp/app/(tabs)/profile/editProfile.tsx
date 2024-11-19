@@ -116,7 +116,6 @@ useEffect(() => {
         { id: '10', title: "Bio", content: bio },
         { id: '11', title: "ProfilePic", content: profilePic },
       ]))
-    saveUpdates();
   }
 
   const pickImage = async () => {
@@ -138,7 +137,7 @@ return (
               
               <ThemedView style={styles.profileBox}>
                  <Avatar size="xl">
-                  <AvatarFallbackText />
+                 <AvatarFallbackText>No Image</AvatarFallbackText>
                   <AvatarImage source={{ uri: profilePic }} />
                 </Avatar>
                   <Pressable onPress={() => pickImage()}>
@@ -153,7 +152,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={username} onBlur={setUsername} />
+                <InputField value={username} onChangeText={setUsername} />
               </Input>
               </ThemedView>
 
@@ -162,7 +161,7 @@ return (
               <Textarea
                 size="md"
               >
-                <TextareaInput placeholder={bio} onChangeText={setBio} />
+                <TextareaInput value={bio} onChangeText={setBio} />
               </Textarea>
             </ThemedView>   
 
@@ -179,7 +178,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={name} onChangeText={setName}/>
+                <InputField value={name} onChangeText={setName}/>
               </Input>
               </ThemedView>
 
@@ -190,7 +189,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={education}  onChangeText={setEductaion}/>
+                <InputField value={education}  onChangeText={setEductaion}/>
               </Input>
               </ThemedView>
 
@@ -201,7 +200,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={university} />
+                <InputField value={university} onChangeText={setUniversity}/>
               </Input>
               </ThemedView>
 
@@ -212,7 +211,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={grade} onChangeText={setGrade}/>
+                <InputField value={grade} onChangeText={setGrade}/>
               </Input>
               </ThemedView>
 
@@ -223,7 +222,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={currentCourses} onChangeText={setCurrentCourses} />
+                <InputField value={currentCourses} onChangeText={setCurrentCourses} />
               </Input>
               </ThemedView>
 
@@ -234,7 +233,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={goals} onChangeText={setGoals} />
+                <InputField value={goals} onChangeText={setGoals} />
               </Input>
               </ThemedView>
 
@@ -245,7 +244,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={contact} onChangeText={setContact}/>
+                <InputField value={contact} onChangeText={setContact}/>
               </Input>
               </ThemedView>
 
@@ -256,7 +255,7 @@ return (
                 variant="outline"
                 size="md"
               >
-                <InputField placeholder={email} onChangeText={setEmail}/>
+                <InputField value={email} onChangeText={setEmail}/>
               </Input>
               </ThemedView>
 

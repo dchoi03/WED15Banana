@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TouchableOpacity, TextInput } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { useState } from 'react';
 import { useNavigation } from 'expo-router';
 import { Input, InputField } from "@/components/ui/input";
@@ -13,36 +13,76 @@ export default function CreateSessionScreen() {
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [members, setMembers] = useState("");
-  const [showDatePicker, setShowDatePicker] = useState(true);
-  const [showTimePicker, setShowTimePicker] = useState(true);
-
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [isJoined, setIsJoined] = useState(false);
+  const [errors, setErrors] = useState({}); // State for validation errors
+  const [membersInfo, setMembersInfo] = useState([]);
   const navigation = useNavigation();
 
   const onDateChange = (event, selectedDate) => {
-    setShowDatePicker(false);
+    setShowDatePicker(true);
     if (selectedDate) {
       setDate(selectedDate);
     }
   };
 
   const onTimeChange = (event, selectedTime) => {
-    setShowTimePicker(false);
+    setShowTimePicker(true);
     if (selectedTime) {
       setTime(selectedTime);
     }
   };
+
+  // Validate fields and set error messages if necessary
+  const validateFields = () => {
+    const newErrors = {};
+    if (!name) newErrors.name = "Session Name Required";
+    if (!location) newErrors.location = "Location Required";
+
+    setErrors(newErrors);
+    
+    // If no errors, navigate to the next screen
+    if (Object.keys(newErrors).length === 0) {
+      navigation.navigate(
+        "index", 
+        { name, 
+          date: date.toISOString(), 
+          time: time.toISOString(), 
+          location, 
+          description, 
+          members, 
+          isJoined: true, 
+          membersInfo: [
+            { memberName: "Name",
+               memberProfilePic: "ProfilePic" 
+            }
+          ] 
+        });
+    }
+  };
+
+  const getInputFieldStyles = (field) => ({
+    height: 45,
+    borderColor: errors[field] ? 'red' : '#ccc',
+    borderWidth: 1,
+    });
 
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
         <VStack space="md">
           <Text style={styles.label}>Session Name</Text>
-          <Input style={{ height: 45 }}>
+          <Input style={getInputFieldStyles('name')}>
             <InputField 
               type="text" 
-              placeholder="Enter Session Name" 
+              placeholder={errors.name ? errors.name : "Enter Session Name"} 
+              placeholderTextColor={errors.name ? "red" : "#888"}
               value={name}
-              onChangeText={setName}
+              onChangeText={(text) => {
+                setName(text);
+                setErrors((prev) => ({ ...prev, name: "" }));
+              }}
             />
           </Input>
         </VStack>
@@ -53,7 +93,7 @@ export default function CreateSessionScreen() {
       <Text style={styles.label}>Date</Text>
         <VStack space="md">
         <View style={{flexDirection: "row"}}>
-          <Input style={{ height: 45 }}>
+          {/* <Input style={{ height: 45 }}>
             <TouchableOpacity 
               onPress={() => setShowDatePicker(true)} 
               style={styles.datePickerTouchable}
@@ -62,15 +102,15 @@ export default function CreateSessionScreen() {
                 {date.toDateString()}
               </Text>
             </TouchableOpacity>
-          </Input>
-          {showDatePicker && (
+          </Input> */}
+          
             <DateTimePicker 
+            style={{ backgroundColor: 'white' }}
               value={date}
               mode="date"
               display="default"
               onChange={onDateChange}
             />
-          )}
         </View>
         </VStack>
       </View>
@@ -103,12 +143,16 @@ export default function CreateSessionScreen() {
       <View style={styles.inputContainer}>
         <VStack space="md">
           <Text style={styles.label}>Location</Text>
-          <Input style={{ height: 45 }}>
+          <Input style={getInputFieldStyles('location')}>
             <InputField 
               type="text" 
-              placeholder="Enter Location"
+              placeholder={errors.location ? errors.location : "Enter Location"}
+              placeholderTextColor={errors.location ? "red" : "redr"}
               value={location}
-              onChangeText={setLocation}
+              onChangeText={(text) => {
+                setLocation(text);
+                setErrors((prev) => ({ ...prev, location: "" }));
+              }}
             />
           </Input>
         </VStack>
@@ -120,9 +164,11 @@ export default function CreateSessionScreen() {
           <Input style={styles.descriptionInput}>
             <InputField 
               type="text" 
-              placeholder="Enter Description"
+              placeholder={"Enter Description"}
               value={description}
-              onChangeText={setDescription}
+              onChangeText={(text) => {
+                setDescription(text);
+              }}
               multiline={true}
             />
           </Input>
@@ -131,13 +177,15 @@ export default function CreateSessionScreen() {
 
       <View style={styles.inputContainer}>
         <VStack space="md">
-          <Text style={styles.label}>Max Number of Members</Text>
+          <Text style={styles.label}>Max Number of Buddies</Text>
           <Input style={{ height: 45 }}>
             <InputField 
               type="text"
-              placeholder="Enter Max Number of Members"
+              placeholder={"Enter Max Number of Members"}
               value={members}
-              onChangeText={setMembers}
+              onChangeText={(text) => {
+                setMembers(text);
+              }}
             />
           </Input>
         </VStack>
@@ -145,7 +193,7 @@ export default function CreateSessionScreen() {
 
       <Button 
         style={styles.createButton} 
-        onPress={() => navigation.navigate("index", { name, date, time, location, description, members })}
+        onPress={validateFields} // Call validateFields on press
       >
         <ButtonText style={styles.buttonText}>Create Session</ButtonText>
       </Button>
