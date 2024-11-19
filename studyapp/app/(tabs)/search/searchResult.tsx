@@ -12,6 +12,7 @@ const sampleStudents = [
     image: Image.resolveAssetSource(
       require("../../../assets/images/people/ava.png")
     ).uri,
+    message: "Finding study partner",
   },
   {
     name: "George",
@@ -21,6 +22,7 @@ const sampleStudents = [
     image: Image.resolveAssetSource(
       require("../../../assets/images/people/george.png")
     ).uri,
+    message: "Happy to help",
   },
   {
     name: "Geb",
@@ -30,6 +32,7 @@ const sampleStudents = [
     image: Image.resolveAssetSource(
       require("../../../assets/images/people/james.png")
     ).uri,
+    message: "Need help with COMP4511 React Native assignment",
   },
   {
     name: "Geth",
@@ -39,6 +42,7 @@ const sampleStudents = [
     image: Image.resolveAssetSource(
       require("../../../assets/images/people/james.png")
     ).uri,
+    message: "Need help with COMP4511 React Native assignment",
   },
   {
     name: "Bob",
@@ -48,6 +52,7 @@ const sampleStudents = [
     image: Image.resolveAssetSource(
       require("../../../assets/images/people/james.png")
     ).uri,
+    message: "Need help with COMP4511 React Native assignment",
   },
   {
     name: "Tom",
@@ -57,6 +62,7 @@ const sampleStudents = [
     image: Image.resolveAssetSource(
       require("../../../assets/images/people/james.png")
     ).uri,
+    message: "Need help with COMP4511 React Native assignment",
   },
   {
     name: "Jessica",
@@ -66,6 +72,7 @@ const sampleStudents = [
     image: Image.resolveAssetSource(
       require("../../../assets/images/people/james.png")
     ).uri,
+    message: "Need help with COMP4511 React Native assignment",
   },
   {
     name: "James",
@@ -75,6 +82,7 @@ const sampleStudents = [
     image: Image.resolveAssetSource(
       require("../../../assets/images/people/james.png")
     ).uri,
+    message: "Need help with COMP4511 React Native assignment",
   },
 ];
 

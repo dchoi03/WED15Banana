@@ -2,10 +2,10 @@ import { Stack } from 'expo-router';
 import React from 'react';
 
 
-export default function TabLayout() {
+export default function SearchLayout() {
 
   return (
-    <Stack
+    <Stack initialRouteName="index"
       screenOptions={{
         headerShown: false,
       }}>
@@ -13,6 +13,12 @@ export default function TabLayout() {
         name="index"
         options ={{ 
             title: "Map",
+        }}
+      />
+      <Stack.Screen
+        name="searchProfile"
+        options ={{ 
+            title: "Profile",
         }}
       />
     </Stack>

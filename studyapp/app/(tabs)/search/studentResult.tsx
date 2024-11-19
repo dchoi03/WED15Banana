@@ -1,9 +1,17 @@
-import { Image, StyleSheet, View, TouchableOpacity } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  NativeEventSubscription,
+} from "react-native";
 import { Text } from "@/components/ui/text";
 import { Plus, Check } from "lucide-react-native";
 import Toast from "react-native-toast-message";
 import { useEffect, useState } from "react";
 import { addBuddy, isBuddy } from "@/scripts";
+import { useNavigation } from "expo-router";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 type Student = {
   name: string;
@@ -11,23 +19,29 @@ type Student = {
   degree: string;
   numMutals: string;
   image: string;
+  message: string;
 };
 
 type props = {
   student: Student;
 };
 
+type RootStackParamList = {
+  searchProfile: { profile: string[] };
+};
+
 const StudentResult = (prop: props) => {
   const { student } = prop;
   const [isRequestSent, setIsRequestSent] = useState(false);
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   useEffect(() => {
     const checkBuddy = async () => {
       const result = await isBuddy(student.name);
       setIsRequestSent(result);
-    }
-    checkBuddy()
-  }, [])
+    };
+    checkBuddy();
+  }, []);
 
   const sendRequest = async (name: string) => {
     await addBuddy(name);
@@ -39,68 +53,99 @@ const StudentResult = (prop: props) => {
   };
 
   return (
-    <View style={styles.studentContainer}>
-      <View style={styles.studentInfo}>
-        <Image source={{ uri: student.image }} style={styles.studentImage} />
-        <View style={styles.studentText}>
-          <View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              <Text
-                numberOfLines={1}
-                size={"xl"}
-                style={{ fontWeight: 600, color: "#05405D" }}
+    <>
+      {/* 
+    <TouchableOpacity onPress={() => {
+      const name: string = JSON.stringify({
+        id: 100,
+        title: "Username",
+        content: student.name
+      });
+      const bio: string = JSON.stringify({
+        id: 100,
+        title: "Bio",
+        content: student.message
+      });
+      const pic: string = JSON.stringify({
+        id: 100,
+        title: "ProfilePic",
+        content: student.image
+      });
+
+      const info: string[] = [name, bio, pic]
+      navigation.navigate("searchProfile", { info });
+    }}>*/}
+      <View style={styles.studentContainer}>
+        <View style={styles.studentInfo}>
+          <Image source={{ uri: student.image }} style={styles.studentImage} />
+          <View style={styles.studentText}>
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 8,
+                }}
               >
-                {student.name}
-              </Text>
-              <Text
-                numberOfLines={1}
-                size={"md"}
-                style={{ fontWeight: 300, color: "#05405D" }}
-              >
-                {student.year}
+                <Text
+                  numberOfLines={1}
+                  size={"xl"}
+                  style={{ fontWeight: 600, color: "#05405D" }}
+                >
+                  {student.name}
+                </Text>
+                <Text
+                  numberOfLines={1}
+                  size={"md"}
+                  style={{ fontWeight: 300, color: "#05405D" }}
+                >
+                  {student.year}
+                </Text>
+              </View>
+              <Text size={"md"} style={{ color: "#05405D", width: 180 }}>
+                {student.degree}
               </Text>
             </View>
-            <Text size={"md"} style={{ color: "#05405D", width: 180 }}>
-              {student.degree}
+            <Text
+              numberOfLines={1}
+              size={"md"}
+              style={{ color: "#05405D", width: 200 }}
+            >
+              {student.numMutals} mutal connections
             </Text>
           </View>
-          <Text
-            numberOfLines={1}
-            size={"md"}
-            style={{ color: "#05405D", width: 200 }}
+        </View>
+        {isRequestSent ? (
+          <View style={{ alignSelf: "center", alignItems: "center" }}>
+            <Check size={24} color={"#05405D"} />
+            <Text
+              numberOfLines={2}
+              size={"sm"}
+              style={{ color: "#05405D", width: 50, textAlign: "center" }}
+            >
+              Request sent
+            </Text>
+          </View>
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              sendRequest(student.name);
+              setIsRequestSent(true);
+            }}
+            style={{ alignSelf: "center", alignItems: "center" }}
           >
-            {student.numMutals} mutal connections
-          </Text>
-        </View>
-      </View>
-      {isRequestSent ? (
-        <View style={{ alignSelf: "center", alignItems: "center" }}>
-          <Check size={24} color={"#05405D"} />
-          <Text numberOfLines={2} size={"sm"} style={{ color: "#05405D", width: 50, textAlign: 'center' }}>
-            Request sent
-          </Text>
-        </View>
-      ) : (
-        <TouchableOpacity
-          onPress={() => {
-            sendRequest(student.name);
-            setIsRequestSent(true);
-          }}
-          style={{ alignSelf: "center", alignItems: "center" }}
-        >
             <Plus size={24} color={"#05405D"} />
-            <Text size={"sm"} style={{ color: "#05405D", width: 50, textAlign: 'center' }}>
+            <Text
+              size={"sm"}
+              style={{ color: "#05405D", width: 50, textAlign: "center" }}
+            >
               Add
             </Text>
-        </TouchableOpacity>
-      )}
-    </View>
+          </TouchableOpacity>
+        )}
+      </View>
+      {/*</TouchableOpacity>*/}
+    </>
   );
 };
 
