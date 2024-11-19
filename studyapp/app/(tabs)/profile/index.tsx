@@ -207,12 +207,13 @@ const styles = StyleSheet.create({
     width: 300,
   },
   listTitle: {
-    width: 120,
+    width: 100,
     fontWeight: "bold",
     paddingBottom: 10,
     fontSize: 15,
   },
   bioText: {
+    alignSelf: "center",
     width: 250,
     marginBottom: 20
   }, 
