@@ -50,8 +50,10 @@ export default function SessionsScreen() {
   });
   const { name, date, time, location, description, members, isJoined, membersInfo, idx } = useLocalSearchParams();
 
-  const dailySessions = sessions.filter((session) => session.date === selectedDate);
-
+  const dailySessions = sessions.filter(
+    (session) => session.date === selectedDate
+  );
+  
   // Load sessions and marked dates from AsyncStorage on mount
   useEffect(() => {
     const loadSessions = async () => {
@@ -152,9 +154,30 @@ export default function SessionsScreen() {
             <Text style={styles.dailyHeading}>Sessions on {selectedDate}</Text>
             {dailySessions.length > 0 ? (
               dailySessions.map((item, idx) => (
-                <TouchableOpacity key={idx} style={styles.dailyTaskContainer}>
-                  <Text style={styles.dailyTaskTitle}>{item.name}</Text>
-                  <Text style={styles.dailyTaskDetails}>
+                <TouchableOpacity
+                  key={idx}
+                  style={
+                    item.isJoined
+                      ? styles.taskContainer // Style for joined sessions
+                      : styles.taskContainer2 // Style for available sessions
+                  }
+                >
+                  <Text
+                    style={
+                      item.isJoined
+                        ? styles.sessionTitle // Style for joined session title
+                        : styles.sessionTitle2 // Style for available session title
+                    }
+                  >
+                    {item.name}
+                  </Text>
+                  <Text
+                    style={
+                      item.isJoined
+                        ? styles.sessionDetails // Style for joined session details
+                        : styles.sessionDetails2 // Style for available session details
+                    }
+                  >
                     {formatTime(item.time)} - {item.location}
                   </Text>
                 </TouchableOpacity>
@@ -162,6 +185,7 @@ export default function SessionsScreen() {
             ) : (
               <Text style={styles.noDailyTasksText}>No sessions available today.</Text>
             )}
+
           </View>
         )}
 

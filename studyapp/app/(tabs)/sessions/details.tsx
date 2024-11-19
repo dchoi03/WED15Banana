@@ -4,6 +4,9 @@ import { useState } from "react";
 import Toast from "react-native-toast-message";
 import * as Speech from "expo-speech";
 import { MaterialIcons } from "@expo/vector-icons"; // Import an icon library
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const SESSIONS_STORE_KEY = "sessions_store_key";
 
 const formatTime = (timeString) => {
   const time = new Date(timeString);
@@ -23,7 +26,6 @@ export default function DetailsScreen() {
     membersInfo: rawMembersInfo,
   } = useLocalSearchParams();
 
-  const [updatedIsJoined, setUpdatedIsJoined] = useState(isJoined);
   const navigation = useNavigation();
   const [isJoined, setIsJoined] = useState(() => {
     if (initialIsJoined === "true" || initialIsJoined === true) {
@@ -45,29 +47,37 @@ export default function DetailsScreen() {
     }
   };
 
-  const handleJoinLeave = () => {
-    const updatedIsJoined = !isJoined; // Toggle the value
+  // Function to toggle join/leave and persist changes
+  const handleJoinLeave = async () => {
+    const updatedIsJoined = !isJoined;
     setIsJoined(updatedIsJoined); // Update local state
 
-    // Show Toast notification
-    Toast.show({
-      type: "info",
-      text1: updatedIsJoined ? "Joined Group" : "Left Group",
-      text2: `You have ${updatedIsJoined ? "joined" : "left"} the session "${name}".`,
-    });
+    try {
+      // Load sessions from AsyncStorage
+      const storedSessions = await AsyncStorage.getItem(SESSIONS_STORE_KEY);
+      let sessions = storedSessions ? JSON.parse(storedSessions) : [];
 
-    // Navigate back to index with updated session data
-    navigation.navigate("index", {
-      idx,
-      name,
-      date,
-      time,
-      location,
-      description,
-      members,
-      isJoined: updatedIsJoined,
-      membersInfo: JSON.stringify(membersInfo),
-    });
+      // Update the specific session's `isJoined` state
+      if (sessions[idx]) {
+        sessions[idx].isJoined = updatedIsJoined;
+      }
+
+      // Save updated sessions back to AsyncStorage
+      await AsyncStorage.setItem(SESSIONS_STORE_KEY, JSON.stringify(sessions));
+
+      // Show Toast notification
+      Toast.show({
+        type: "info",
+        text1: updatedIsJoined ? "Joined Group" : "Left Group",
+        text2: `You have ${updatedIsJoined ? "joined" : "left"} the session "${name}".`,
+      });
+
+      // Navigate back to index screen with updated flag
+      navigation.navigate("index", { updated: true });
+    } catch (error) {
+      console.error("Error updating session:", error);
+      Alert.alert("Error", "Failed to update session.");
+    }
   };
 
   return (
