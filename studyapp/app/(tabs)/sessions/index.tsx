@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { ChevronDownIcon } from "@/components/ui/icon";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useFocusEffect } from "@react-navigation/native";
 
 const SESSIONS_STORE_KEY = "sessions_store_key";
 
@@ -55,7 +56,8 @@ export default function SessionsScreen() {
   );
   
   // Load sessions and marked dates from AsyncStorage on mount
-  useEffect(() => {
+  useFocusEffect(
+    React.useCallback(() => {
     const loadSessions = async () => {
       const storedSessions = await AsyncStorage.getItem(SESSIONS_STORE_KEY);
       if (storedSessions) {
@@ -75,7 +77,7 @@ export default function SessionsScreen() {
       }
     };
     loadSessions();
-  }, []);
+  }, []));
 
   // Save sessions to AsyncStorage whenever they change
   useEffect(() => {

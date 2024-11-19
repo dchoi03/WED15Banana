@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ScrollView, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {
@@ -85,19 +85,26 @@ export default function ProfilePage() {
   const navigation = useNavigation();
   const isDarkMode = colorMode === "dark";
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+        style= {{ backgroundColor: { isDarkMode === 'light' ? 'black' : ' white' } }}
+        onPress={() => {
+          setPageColours();
+        }}
+      >
+        <ButtonIcon as={SunIcon}></ButtonIcon>
+      </Button>
+      ),
+    });
+  }, [navigation, isDarkMode]);
+
   return (
-    <GluestackUIProvider mode={colorMode} >
+    // <ScrollView style={{ backgroundColor: 'white' }}>
+<GluestackUIProvider mode={colorMode} >
     <ThemedView  style={[styles.container, isDarkMode && styles.darkContainer]}>
       <ThemedView style={[styles.padder, isDarkMode && styles.darkContainer ]}/>
-        <Box style={styles.relativeButton}>
-        <Button
-          onPress={() => {
-            setPageColours();
-          }}
-        >
-          <ButtonIcon as={SunIcon}></ButtonIcon>
-        </Button>
-      </Box>
         <ThemedView style={[styles.subContainer, isDarkMode && styles.darkContainer]}>
           <Avatar size="2xl">
           <AvatarFallbackText>No Image</AvatarFallbackText>
@@ -107,10 +114,8 @@ export default function ProfilePage() {
             }}/>
           </Avatar>
         <ThemedText style={[styles.nameText, isDarkMode && styles.darkText]}>{name}</ThemedText>
-        <View style={styles.scroller}>
-          <ScrollView >
+        <View>
             <ThemedText style={[styles.bioText, isDarkMode && styles.darkText]}>{bio}</ThemedText>
-          </ScrollView>
         </View>
         <ButtonGroup style={styles.buttonGroup} >
           <Button style={styles.button} size="lg" action="primary" onPress={() => navigation.navigate('buddyList' as never)}>
@@ -136,6 +141,7 @@ export default function ProfilePage() {
         </ThemedView>
     </ThemedView>
     </GluestackUIProvider>
+    // </ScrollView>
   );
 }
 
@@ -194,7 +200,6 @@ const styles = StyleSheet.create({
     color: "#007AFF",
   },
   buttonGroup: {
-    marginTop: 20,
     marginBottom: 10,
     width: 220,
   },
@@ -215,12 +220,9 @@ const styles = StyleSheet.create({
   bioText: {
     alignSelf: "center",
     width: 250,
-    marginBottom: 20
+    marginBottom: 20,
   }, 
-  scroller: {
-    height: 120,
-    width: 300,
-  }, 
+
   toggleBox: {
     width: 20,
     height: 20,
@@ -231,6 +233,6 @@ const styles = StyleSheet.create({
       position: "absolute",
       width: 30,
       height: 30,
-      marginLeft: 375
+      marginLeft: 350,
   } 
 });
