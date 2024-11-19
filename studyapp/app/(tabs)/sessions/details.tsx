@@ -9,9 +9,10 @@ const formatTime = (timeString) => {
 };
 
 export default function DetailsScreen() {
-  const { name, date, time, location, description, members, idx, isJoined } = useLocalSearchParams();
+  const { name, date, time, location, description, members, idx, isJoined, membersInfo: rawMembersInfo } = useLocalSearchParams();
   const navigation = useNavigation();
-
+  const membersInfo = rawMembersInfo ? JSON.parse(rawMembersInfo) : [];
+  
   const handleJoinLeave = () => {
     const updatedIsJoined = !isJoined;
     navigation.navigate("index", { name, date, time, location, description, members, idx, isJoined: updatedIsJoined, })
@@ -35,7 +36,7 @@ export default function DetailsScreen() {
         </View>
         <View>
           <Text style={styles.subHeading}>
-            Members {members ? `2/${members}` : "(Open Session)"}
+            Members {members ? `${membersInfo.length}/${members}` : "(Open Session)"}
           </Text>
         </View>
 

@@ -1,28 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Calendar } from "react-native-calendars";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useLocalSearchParams } from "expo-router";
-import { Select, SelectTrigger, SelectInput, SelectIcon, SelectPortal, SelectBackdrop, SelectContent, SelectDragIndicatorWrapper, SelectDragIndicator, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectInput,
+  SelectIcon,
+  SelectPortal,
+  SelectBackdrop,
+  SelectContent,
+  SelectDragIndicatorWrapper,
+  SelectDragIndicator,
+  SelectItem,
+} from "@/components/ui/select";
 import { ChevronDownIcon } from "@/components/ui/icon";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-// Format function for displaying time
 const formatTime = (timeString) => {
   const time = new Date(timeString);
   return `${time.toLocaleDateString()} ${time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
 };
 
 export default function SessionsScreen() {
-  const [selected, setSelected] = useState('');
-  const [mySessions, setMySessions] = useState([]);
-  const [viewType, setViewType] = useState("monthly"); // View type state
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]); // Selected date
-  const [markedDates, setMarkedDates] = useState({
-    '2024-12-03': { customStyles: styles.markedDateContainer },
-    '2024-12-14': { customStyles: styles.markedDateContainer },
-    '2024-12-29': { customStyles: styles.markedDateContainer },
-  });  // State to store marked dates
-  const [availableSessions, setAvailableSessions] = useState([
+  const [sessions, setSessions] = useState([
     {
       name: "Python Help Session",
       date: "2024-12-03",
@@ -31,54 +33,43 @@ export default function SessionsScreen() {
       description: "Get help with Python assignments",
       members: 5,
       isJoined: false,
+      membersInfo: [
+        { memberName: "Bob", profilePicture: "..." },
+        { memberName: "Bob2", profilePicture: "..." },
+      ],
     },
-    // {
-    //   name: "COMP3121 Study Session",
-    //   date: "2024-12-14",
-    //   time: "2024-12-14T10:00:00.000Z",
-    //   location: "Online",
-    //   description: "Revision for COMP3121 exam",
-    //   members: 10,
-    // },
-    // {
-    //   name: "COMP1151 Review",
-    //   date: "2024-12-29",
-    //   time: "2024-12-29T04:00:00.000Z",
-    //   location: "Ainsworth Building",
-    //   description: "Review concepts for COMP1151",
-    //   members: 8,
-    // },
   ]);
-  
-  const { name, date, time, location, description, members, isJoined } = useLocalSearchParams();
 
-  const dailySessions = availableSessions.filter((session) => session.date === selectedDate);
+  const [viewType, setViewType] = useState("monthly");
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
+  const [markedDates, setMarkedDates] = useState({});
+  const { name, date, time, location, description, members, isJoined, membersInfo } = useLocalSearchParams();
 
-  useEffect(() => {
-    if (viewType === "daily") {
-      // Additional logic can go here for daily view
-    }
-  }, [viewType, selectedDate]);
+  const dailySessions = sessions.filter((session) => session.date === selectedDate);
 
   useEffect(() => {
-    // If session data is available, add it to the sessions and mark the date on the calendar
     if (name && date) {
-      const newSession = { name, date, time, location, description, members };
-      setMySessions((prevSessions) => [...prevSessions, newSession]);
+      const newSession = { name, date, time, location, description, members, isJoined, membersInfo };
+      setSessions((prevSessions) => [...prevSessions, newSession]);
 
-      // Update the markedDates with the new session's date
-      const formattedDate = date.split('T')[0];  // Extract the date part (YYYY-MM-DD)
+      const formattedDate = date.split("T")[0];
       setMarkedDates((prevDates) => ({
         ...prevDates,
-        [formattedDate]: { selected: true, selectedColor: "#088DCD", customStyles: styles.JoinedDateContainer },
+        [formattedDate]: {
+          selected: true,
+          selectedColor: "#088DCD",
+          customStyles: styles.JoinedDateContainer,
+        },
       }));
     }
-  }, [name, date, time, location, description, members]);
+  }, [name, date]);
+
+  const groupSessions = sessions.filter((session) => session.isJoined);
+  const availableSessions = sessions.filter((session) => !session.isJoined);
 
   return (
     <View style={styles.container}>
       <ScrollView>
-        {/* Select View Toggle */}
         <View style={styles.selectWrapper}>
           <Select onValueChange={(value) => setViewType(value)} value={viewType}>
             <SelectTrigger variant="outline" size="md">
@@ -98,49 +89,47 @@ export default function SessionsScreen() {
           </Select>
         </View>
 
-        {/* Monthly View */}
         {viewType === "monthly" && (
           <Calendar
             style={styles.calendarStyle}
             onDayPress={(day) => setSelectedDate(day.dateString)}
-            markedDates={markedDates} // Use the markedDates state here
-            markingType="custom" // Specify custom marking type
+            markedDates={markedDates}
+            markingType="custom"
           />
         )}
 
-        {/* Daily View */}
-          {viewType === "daily" && (
-            <View style={styles.dailyView}>
-              <Text style={styles.dailyHeading}>Sessions on {selectedDate}</Text>
-              {dailySessions.length > 0 ? (
-                dailySessions.map((item, idx) => (
-                  <TouchableOpacity key={idx} style={styles.dailyTaskContainer}>
-                    <Text style={styles.dailyTaskTitle}>{item.name}</Text>
-                    <Text style={styles.dailyTaskDetails}>
-                      {formatTime(item.time)} - {item.location}
-                    </Text>
-                  </TouchableOpacity>
-                ))
-              ) : (
-                <Text style={styles.noDailyTasksText}>No sessions available today.</Text>
-              )}
-            </View>
-          )}
+        {viewType === "daily" && (
+          <View style={styles.dailyView}>
+            <Text style={styles.dailyHeading}>Sessions on {selectedDate}</Text>
+            {dailySessions.length > 0 ? (
+              dailySessions.map((item, idx) => (
+                <TouchableOpacity key={idx} style={styles.dailyTaskContainer}>
+                  <Text style={styles.dailyTaskTitle}>{item.name}</Text>
+                  <Text style={styles.dailyTaskDetails}>
+                    {formatTime(item.time)} - {item.location}
+                  </Text>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text style={styles.noDailyTasksText}>No sessions available today.</Text>
+            )}
+          </View>
+        )}
 
         <View>
           <Text style={styles.GroupSessionHeading}>Your Group Sessions</Text>
-          {mySessions.length === 0 ? (
+          {groupSessions.length === 0 ? (
             <View style={styles.noTasksContainer}>
               <Text style={styles.noTaskText}>No Group Sessions Made</Text>
             </View>
           ) : (
             <View style={styles.tasksWrapper}>
-              {mySessions.map(({ name, date, time, location, members, isJoined }, idx) => (
+              {groupSessions.map(({ name, date, time, location, members, membersInfo }, idx) => (
                 <Link
                   key={idx}
                   href={{
                     pathname: "sessions/details",
-                    params: { name, date, time, location, members, idx },
+                    params: { name, date, time, location, members, idx, isJoined: true, membersInfo: JSON.stringify(membersInfo) },
                   }}
                   asChild
                 >
@@ -155,37 +144,37 @@ export default function SessionsScreen() {
             </View>
           )}
         </View>
+
         <View>
-        <Text style={styles.ToJoinHeading}>Available To Join</Text>
-        {availableSessions.length === 0 ? (
-          <View style={styles.noTasksContainer}>
-          <Text style={styles.noTaskText}>Nothing Available</Text>
-        </View>
-        ) : (
-          <View style={styles.tasksWrapper}>
-            {availableSessions.map(({ name, date, time, location, description, members, isJoined }, idx) => (
-              <Link
-                key={idx}
-                href={{
-                  pathname: "sessions/details",
-                  params: { name, date, time, location, description, members, idx },
-                }}
-                asChild
-              >
-                <TouchableOpacity style={styles.taskContainer2}>
-                  <Text style={styles.sessionTitle2}>{name}</Text>
-                  <Text style={styles.sessionDetails2}>
-                    {formatTime(time)} - {location}
-                  </Text>
-                </TouchableOpacity>
-              </Link>
-            ))}
-          </View>
-        )}
+          <Text style={styles.ToJoinHeading}>Available To Join</Text>
+          {availableSessions.length === 0 ? (
+            <View style={styles.noTasksContainer}>
+              <Text style={styles.noTaskText}>Nothing Available</Text>
+            </View>
+          ) : (
+            <View style={styles.tasksWrapper}>
+              {availableSessions.map(({ name, date, time, location, members, membersInfo }, idx) => (
+                <Link
+                  key={idx}
+                  href={{
+                    pathname: "sessions/details",
+                    params: { name, date, time, location, members, idx, isJoined: false, membersInfo: JSON.stringify(membersInfo) },
+                  }}
+                  asChild
+                >
+                  <TouchableOpacity style={styles.taskContainer2}>
+                    <Text style={styles.sessionTitle2}>{name}</Text>
+                    <Text style={styles.sessionDetails2}>
+                      {formatTime(time)} - {location}
+                    </Text>
+                  </TouchableOpacity>
+                </Link>
+              ))}
+            </View>
+          )}
         </View>
       </ScrollView>
-      
-      {/* Create Session Button */}
+
       <View style={styles.floatingButton}>
         <Link href="/sessions/create" asChild>
           <TouchableOpacity>
