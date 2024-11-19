@@ -61,11 +61,8 @@ export default function TabLayout() {
           name="profile"
           options={{
             title: "Profile",
-            tabBarIcon: ({ color, focused }) => (
-              <TabBarIcon
-                name={focused ? "code-slash" : "code-slash-outline"}
-                color={color}
-              />
+            tabBarIcon: ({ color, size }) => (
+              <Feather name="user" size={size} color={color} />
             ),
           }}
         />

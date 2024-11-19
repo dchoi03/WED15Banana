@@ -20,7 +20,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from '@react-navigation/native';
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { Box } from "@/components/ui/box";
-import { SunIcon } from "@/components/ui/icon"
+import { SunIcon, EditIcon, FavouriteIcon } from "@/components/ui/icon"
 
 const PROFILE_KEY = "@profile"
 const COLOUR_MODE = "@colorMode";
@@ -91,6 +91,7 @@ export default function ProfilePage() {
       <ThemedView style={[styles.padder, isDarkMode && styles.darkContainer ]}/>
         <Box style={styles.relativeButton}>
         <Button
+          style={styles.darkModeButton}
           onPress={() => {
             setPageColours();
           }}
@@ -115,9 +116,11 @@ export default function ProfilePage() {
         <ButtonGroup style={styles.buttonGroup} >
           <Button style={styles.button} size="lg" action="primary" onPress={() => navigation.navigate('buddyList' as never)}>
           <ButtonText>Buddies</ButtonText>
+          <ButtonIcon as={FavouriteIcon}></ButtonIcon>
           </Button >
           <Button style={styles.button} size="lg" onPress={() => navigation.navigate('editProfile' as never)}>
           <ButtonText>Edit Profile</ButtonText>
+          <ButtonIcon as={EditIcon}></ButtonIcon>
           </Button>
         </ButtonGroup>
         <ThemedView style={[styles.detailsContainer,  isDarkMode && styles.darkContainer]}>
@@ -196,7 +199,7 @@ const styles = StyleSheet.create({
   buttonGroup: {
     marginTop: 20,
     marginBottom: 10,
-    width: 220,
+    alignSelf: "center"
   },
   listItem: {
     flexDirection: "row",
@@ -227,10 +230,12 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
   }, 
-    relativeButton: {
+  relativeButton: {
       position: "absolute",
-      width: 30,
-      height: 30,
-      marginLeft: 375
-  } 
+      marginLeft: 350,
+  }, 
+  darkModeButton: {
+    width: 40,
+    height: 30,
+  }
 });
