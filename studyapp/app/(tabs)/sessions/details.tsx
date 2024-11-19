@@ -23,8 +23,14 @@ export default function DetailsScreen() {
     membersInfo: rawMembersInfo,
   } = useLocalSearchParams();
 
-  const [isJoined, setIsJoined] = useState(initialIsJoined === "true" || initialIsJoined === true);
+  const [updatedIsJoined, setUpdatedIsJoined] = useState(isJoined);
   const navigation = useNavigation();
+  const [isJoined, setIsJoined] = useState(() => {
+    if (initialIsJoined === "true" || initialIsJoined === true) {
+      return true; // Normalize "true" or true to `true`
+    }
+    return false; // Any other case, including "false" or false, defaults to `false`
+  });
   const membersInfo = rawMembersInfo ? JSON.parse(rawMembersInfo) : [];
 
   // Function to read the description
@@ -40,7 +46,7 @@ export default function DetailsScreen() {
   };
 
   const handleJoinLeave = () => {
-    const updatedIsJoined = !isJoined;
+    const updatedIsJoined = !isJoined; // Toggle the value
     setIsJoined(updatedIsJoined); // Update local state
 
     // Show Toast notification
