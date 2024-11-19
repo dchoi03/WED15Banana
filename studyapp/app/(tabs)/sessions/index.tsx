@@ -18,6 +18,9 @@ import {
 import { ChevronDownIcon } from "@/components/ui/icon";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
+const SESSIONS_STORE_KEY = "sessions_store_key";
+
+
 const formatTime = (timeString) => {
   const time = new Date(timeString);
   return `${time.toLocaleDateString()} ${time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
@@ -42,27 +45,75 @@ export default function SessionsScreen() {
 
   const [viewType, setViewType] = useState("monthly");
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
-  const [markedDates, setMarkedDates] = useState({});
-  const { name, date, time, location, description, members, isJoined, membersInfo } = useLocalSearchParams();
+  const [markedDates, setMarkedDates] = useState({
+    '2024-12-03': { customStyles: styles.markedDateContainer },
+  });
+  const { name, date, time, location, description, members, isJoined, membersInfo, idx } = useLocalSearchParams();
 
-  const dailySessions = sessions.filter((session) => session.date === selectedDate);
+  const dailySessions = sessions.filter(
+    (session) => session.date === selectedDate
+  );
+  
+  // Load sessions and marked dates from AsyncStorage on mount
+  useEffect(() => {
+    const loadSessions = async () => {
+      const storedSessions = await AsyncStorage.getItem(SESSIONS_STORE_KEY);
+      if (storedSessions) {
+        const parsedSessions = JSON.parse(storedSessions);
+        setSessions(parsedSessions);
 
+        // Generate markedDates from stored sessions
+        const initialMarkedDates = {};
+        parsedSessions.forEach((session) => {
+          const formattedDate = session.date.split("T")[0];
+          initialMarkedDates[formattedDate] = {
+            selected: true,
+            selectedColor: session.isJoined ? "#088DCD" : "#A2DDFA",
+          };
+        });
+        setMarkedDates(initialMarkedDates);
+      }
+    };
+    loadSessions();
+  }, []);
+
+  // Save sessions to AsyncStorage whenever they change
+  useEffect(() => {
+    const saveSessions = async () => {
+      await AsyncStorage.setItem(SESSIONS_STORE_KEY, JSON.stringify(sessions));
+    };
+    saveSessions();
+  }, [sessions]);
+
+  // Add or update session if parameters are passed
   useEffect(() => {
     if (name && date) {
       const newSession = { name, date, time, location, description, members, isJoined, membersInfo };
-      setSessions((prevSessions) => [...prevSessions, newSession]);
+
+      setSessions((prevSessions) => {
+        const updatedSessions = prevSessions.map((session, index) =>
+          index === idx ? { ...session, isJoined } : session
+        );
+
+        const exists = prevSessions.some(
+          (session) => session.name === name && session.date === date
+        );
+        if (!exists) {
+          return [...updatedSessions, newSession];
+        }
+        return updatedSessions;
+      });
 
       const formattedDate = date.split("T")[0];
       setMarkedDates((prevDates) => ({
         ...prevDates,
         [formattedDate]: {
           selected: true,
-          selectedColor: "#088DCD",
-          customStyles: styles.JoinedDateContainer,
+          selectedColor: isJoined ? "#088DCD" : "#A2DDFA",
         },
       }));
     }
-  }, [name, date]);
+  }, [name, date, isJoined]);
 
   const groupSessions = sessions.filter((session) => session.isJoined);
   const availableSessions = sessions.filter((session) => !session.isJoined);
@@ -103,9 +154,30 @@ export default function SessionsScreen() {
             <Text style={styles.dailyHeading}>Sessions on {selectedDate}</Text>
             {dailySessions.length > 0 ? (
               dailySessions.map((item, idx) => (
-                <TouchableOpacity key={idx} style={styles.dailyTaskContainer}>
-                  <Text style={styles.dailyTaskTitle}>{item.name}</Text>
-                  <Text style={styles.dailyTaskDetails}>
+                <TouchableOpacity
+                  key={idx}
+                  style={
+                    item.isJoined
+                      ? styles.taskContainer // Style for joined sessions
+                      : styles.taskContainer2 // Style for available sessions
+                  }
+                >
+                  <Text
+                    style={
+                      item.isJoined
+                        ? styles.sessionTitle // Style for joined session title
+                        : styles.sessionTitle2 // Style for available session title
+                    }
+                  >
+                    {item.name}
+                  </Text>
+                  <Text
+                    style={
+                      item.isJoined
+                        ? styles.sessionDetails // Style for joined session details
+                        : styles.sessionDetails2 // Style for available session details
+                    }
+                  >
                     {formatTime(item.time)} - {item.location}
                   </Text>
                 </TouchableOpacity>
@@ -113,6 +185,7 @@ export default function SessionsScreen() {
             ) : (
               <Text style={styles.noDailyTasksText}>No sessions available today.</Text>
             )}
+
           </View>
         )}
 
@@ -124,12 +197,12 @@ export default function SessionsScreen() {
             </View>
           ) : (
             <View style={styles.tasksWrapper}>
-              {groupSessions.map(({ name, date, time, location, members, membersInfo }, idx) => (
+              {groupSessions.map(({ name, date, time, location, description, members, membersInfo }, idx) => (
                 <Link
                   key={idx}
                   href={{
                     pathname: "sessions/details",
-                    params: { name, date, time, location, members, idx, isJoined: true, membersInfo: JSON.stringify(membersInfo) },
+                    params: { name, date, time, location, description, members, idx, isJoined: true, membersInfo: JSON.stringify(membersInfo) },
                   }}
                   asChild
                 >
@@ -153,12 +226,12 @@ export default function SessionsScreen() {
             </View>
           ) : (
             <View style={styles.tasksWrapper}>
-              {availableSessions.map(({ name, date, time, location, members, membersInfo }, idx) => (
+              {availableSessions.map(({ name, date, time, description, location, members, membersInfo }, idx) => (
                 <Link
                   key={idx}
                   href={{
                     pathname: "sessions/details",
-                    params: { name, date, time, location, members, idx, isJoined: false, membersInfo: JSON.stringify(membersInfo) },
+                    params: { name, date, time, location, description, members, idx, isJoined: false, membersInfo: JSON.stringify(membersInfo) },
                   }}
                   asChild
                 >
