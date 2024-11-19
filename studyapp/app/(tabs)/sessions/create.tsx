@@ -112,7 +112,7 @@ export default function CreateSessionScreen() {
           </Input> */}
           
             <DateTimePicker 
-            style={{ backgroundColor: 'white' }}
+            style={{ backgroundColor: 'white', marginLeft: 10 }}
               value={date}
               mode="date"
               display="default"

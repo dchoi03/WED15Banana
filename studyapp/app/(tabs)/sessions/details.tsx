@@ -2,6 +2,8 @@ import { Text, View, StyleSheet, TouchableOpacity, ScrollView } from "react-nati
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
+import * as Speech from "expo-speech";
+import { MaterialIcons } from "@expo/vector-icons"; // Import an icon library
 
 const formatTime = (timeString) => {
   const time = new Date(timeString);
@@ -24,6 +26,18 @@ export default function DetailsScreen() {
   const [isJoined, setIsJoined] = useState(initialIsJoined === "true" || initialIsJoined === true);
   const navigation = useNavigation();
   const membersInfo = rawMembersInfo ? JSON.parse(rawMembersInfo) : [];
+
+  // Function to read the description
+  const handleReadDescription = () => {
+    if (description) {
+      Speech.speak(description, {
+        rate: 1.0, // Adjust speed
+        pitch: 1.0, // Adjust pitch
+      });
+    } else {
+      Speech.speak("No description available for this session.");
+    }
+  };
 
   const handleJoinLeave = () => {
     const updatedIsJoined = !isJoined;
@@ -60,12 +74,16 @@ export default function DetailsScreen() {
           </Text>
           <Text style={styles.textContainer}>{location}</Text>
         </View>
-        <View>
+        <View style={styles.descriptionContainer}>
           <Text style={styles.subHeading}>Description</Text>
-          <Text style={styles.textContainer}>
-            {description ? description : "No description provided for this session."}
-          </Text>
+          {/* Icon-only TTS Button */}
+          <TouchableOpacity onPress={handleReadDescription} style={styles.ttsIcon}>
+            <MaterialIcons name="volume-up" size={24} color="#007AFF" />
+          </TouchableOpacity>
         </View>
+        <Text style={styles.textContainer}>
+          {description ? description : "No description provided for this session."}
+        </Text>
         <View>
           <Text style={styles.subHeading}>
             Members {members ? `${membersInfo.length}/${members}` : "(Open Session)"}
@@ -107,7 +125,18 @@ const styles = StyleSheet.create({
     color: "#05405D",
     fontWeight: "bold",
     fontSize: 20,
+  },
+
+  descriptionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 20,
+  },
+
+  ttsIcon: {
+    marginLeft: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   textContainer: {

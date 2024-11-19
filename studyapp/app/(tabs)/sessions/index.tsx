@@ -42,7 +42,9 @@ export default function SessionsScreen() {
 
   const [viewType, setViewType] = useState("monthly");
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
-  const [markedDates, setMarkedDates] = useState({});
+  const [markedDates, setMarkedDates] = useState({
+    '2024-12-03': { customStyles: styles.markedDateContainer },
+  });
   const { name, date, time, location, description, members, isJoined, membersInfo } = useLocalSearchParams();
 
   const dailySessions = sessions.filter((session) => session.date === selectedDate);
@@ -62,7 +64,7 @@ export default function SessionsScreen() {
         },
       }));
     }
-  }, [name, date]);
+  }, [name, date,  time, location, description, members, isJoined, membersInfo]);
 
   const groupSessions = sessions.filter((session) => session.isJoined);
   const availableSessions = sessions.filter((session) => !session.isJoined);
@@ -124,12 +126,12 @@ export default function SessionsScreen() {
             </View>
           ) : (
             <View style={styles.tasksWrapper}>
-              {groupSessions.map(({ name, date, time, location, members, membersInfo }, idx) => (
+              {groupSessions.map(({ name, date, time, location, description, members, membersInfo }, idx) => (
                 <Link
                   key={idx}
                   href={{
                     pathname: "sessions/details",
-                    params: { name, date, time, location, members, idx, isJoined: true, membersInfo: JSON.stringify(membersInfo) },
+                    params: { name, date, time, location, description, members, idx, isJoined: true, membersInfo: JSON.stringify(membersInfo) },
                   }}
                   asChild
                 >
@@ -153,12 +155,12 @@ export default function SessionsScreen() {
             </View>
           ) : (
             <View style={styles.tasksWrapper}>
-              {availableSessions.map(({ name, date, time, location, members, membersInfo }, idx) => (
+              {availableSessions.map(({ name, date, time, description, location, members, membersInfo }, idx) => (
                 <Link
                   key={idx}
                   href={{
                     pathname: "sessions/details",
-                    params: { name, date, time, location, members, idx, isJoined: false, membersInfo: JSON.stringify(membersInfo) },
+                    params: { name, date, time, location, description, members, idx, isJoined: false, membersInfo: JSON.stringify(membersInfo) },
                   }}
                   asChild
                 >
