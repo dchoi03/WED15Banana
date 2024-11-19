@@ -46,6 +46,14 @@ export default function SessionsLayout() {
               headerTintColor: '#007AFF',
               }}
           />
+          <Stack.Screen
+            name="details"
+            options={{
+              title: "Session Details", 
+              headerBackTitleVisible: false, // Hide back button text (iOS only)
+              headerTintColor: '#007AFF',
+            }}
+          />
         </Stack>
       </ThemeProvider></GluestackUIProvider>
   );

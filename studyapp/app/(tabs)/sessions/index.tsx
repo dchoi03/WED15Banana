@@ -1,115 +1,368 @@
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { useState, useEffect, SetStateAction } from 'react';
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
-import { Link } from "expo-router";
-import { Select, SelectTrigger, SelectInput, SelectIcon, SelectPortal,
+import { Calendar } from "react-native-calendars";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Link, useLocalSearchParams } from "expo-router";
+import {
+  Select,
+  SelectTrigger,
+  SelectInput,
+  SelectIcon,
+  SelectPortal,
   SelectBackdrop,
   SelectContent,
   SelectDragIndicatorWrapper,
   SelectDragIndicator,
   SelectItem,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import { ChevronDownIcon } from "@/components/ui/icon";
-import { Button, ButtonText } from "@/components/ui/button";
+import AntDesign from "@expo/vector-icons/AntDesign";
+
+const formatTime = (timeString) => {
+  const time = new Date(timeString);
+  return `${time.toLocaleDateString()} ${time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+};
 
 export default function SessionsScreen() {
+  const [sessions, setSessions] = useState([
+    {
+      name: "Python Help Session",
+      date: "2024-12-03",
+      time: "2024-12-03T00:00:00.000Z",
+      location: "UNSW Law Library",
+      description: "Get help with Python assignments",
+      members: 5,
+      isJoined: false,
+      membersInfo: [
+        { memberName: "Bob", profilePicture: "..." },
+        { memberName: "Bob2", profilePicture: "..." },
+      ],
+    },
+  ]);
 
-  const [selected, setSelected] = useState('');
+  const [viewType, setViewType] = useState("monthly");
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
+  const [markedDates, setMarkedDates] = useState({});
+  const { name, date, time, location, description, members, isJoined, membersInfo } = useLocalSearchParams();
 
-  return(
+  const dailySessions = sessions.filter((session) => session.date === selectedDate);
+
+  useEffect(() => {
+    if (name && date) {
+      const newSession = { name, date, time, location, description, members, isJoined, membersInfo };
+      setSessions((prevSessions) => [...prevSessions, newSession]);
+
+      const formattedDate = date.split("T")[0];
+      setMarkedDates((prevDates) => ({
+        ...prevDates,
+        [formattedDate]: {
+          selected: true,
+          selectedColor: "#088DCD",
+          customStyles: styles.JoinedDateContainer,
+        },
+      }));
+    }
+  }, [name, date]);
+
+  const groupSessions = sessions.filter((session) => session.isJoined);
+  const availableSessions = sessions.filter((session) => !session.isJoined);
+
+  return (
     <View style={styles.container}>
       <ScrollView>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 25, top: 20 }}>
+        <View style={styles.selectWrapper}>
+          <Select onValueChange={(value) => setViewType(value)} value={viewType}>
+            <SelectTrigger variant="outline" size="md">
+              <SelectInput placeholder={viewType === "monthly" ? "Monthly" : "Daily"} />
+              <SelectIcon className="mr-3" as={ChevronDownIcon} />
+            </SelectTrigger>
+            <SelectPortal>
+              <SelectBackdrop />
+              <SelectContent>
+                <SelectDragIndicatorWrapper>
+                  <SelectDragIndicator />
+                </SelectDragIndicatorWrapper>
+                <SelectItem label="Monthly" value="monthly" />
+                <SelectItem label="Daily" value="daily" />
+              </SelectContent>
+            </SelectPortal>
+          </Select>
+        </View>
+
+        {viewType === "monthly" && (
+          <Calendar
+            style={styles.calendarStyle}
+            onDayPress={(day) => setSelectedDate(day.dateString)}
+            markedDates={markedDates}
+            markingType="custom"
+          />
+        )}
+
+        {viewType === "daily" && (
+          <View style={styles.dailyView}>
+            <Text style={styles.dailyHeading}>Sessions on {selectedDate}</Text>
+            {dailySessions.length > 0 ? (
+              dailySessions.map((item, idx) => (
+                <TouchableOpacity key={idx} style={styles.dailyTaskContainer}>
+                  <Text style={styles.dailyTaskTitle}>{item.name}</Text>
+                  <Text style={styles.dailyTaskDetails}>
+                    {formatTime(item.time)} - {item.location}
+                  </Text>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text style={styles.noDailyTasksText}>No sessions available today.</Text>
+            )}
+          </View>
+        )}
+
+        <View>
+          <Text style={styles.GroupSessionHeading}>Your Group Sessions</Text>
+          {groupSessions.length === 0 ? (
+            <View style={styles.noTasksContainer}>
+              <Text style={styles.noTaskText}>No Group Sessions Made</Text>
+            </View>
+          ) : (
+            <View style={styles.tasksWrapper}>
+              {groupSessions.map(({ name, date, time, location, members, membersInfo }, idx) => (
+                <Link
+                  key={idx}
+                  href={{
+                    pathname: "sessions/details",
+                    params: { name, date, time, location, members, idx, isJoined: true, membersInfo: JSON.stringify(membersInfo) },
+                  }}
+                  asChild
+                >
+                  <TouchableOpacity style={styles.taskContainer}>
+                    <Text style={styles.sessionTitle}>{name}</Text>
+                    <Text style={styles.sessionDetails}>
+                      {formatTime(time)} - {location}
+                    </Text>
+                  </TouchableOpacity>
+                </Link>
+              ))}
+            </View>
+          )}
+        </View>
+
+        <View>
+          <Text style={styles.ToJoinHeading}>Available To Join</Text>
+          {availableSessions.length === 0 ? (
+            <View style={styles.noTasksContainer}>
+              <Text style={styles.noTaskText}>Nothing Available</Text>
+            </View>
+          ) : (
+            <View style={styles.tasksWrapper}>
+              {availableSessions.map(({ name, date, time, location, members, membersInfo }, idx) => (
+                <Link
+                  key={idx}
+                  href={{
+                    pathname: "sessions/details",
+                    params: { name, date, time, location, members, idx, isJoined: false, membersInfo: JSON.stringify(membersInfo) },
+                  }}
+                  asChild
+                >
+                  <TouchableOpacity style={styles.taskContainer2}>
+                    <Text style={styles.sessionTitle2}>{name}</Text>
+                    <Text style={styles.sessionDetails2}>
+                      {formatTime(time)} - {location}
+                    </Text>
+                  </TouchableOpacity>
+                </Link>
+              ))}
+            </View>
+          )}
+        </View>
+      </ScrollView>
+
+      <View style={styles.floatingButton}>
         <Link href="/sessions/create" asChild>
-          <TouchableOpacity style={styles.createButton}>
-            <Text style={styles.createButtonText}>Create Session</Text>
+          <TouchableOpacity>
+            <Text style={styles.floatingButtonText}>
+              <AntDesign name="addusergroup" size={30} color="white" />
+            </Text>
           </TouchableOpacity>
         </Link>
-        <Select>
-          <SelectTrigger variant="outline" size="md" >
-            <SelectInput placeholder="Monthly" />
-            <SelectIcon className="mr-3" as={ChevronDownIcon} />
-          </SelectTrigger>
-          <SelectPortal>
-            <SelectBackdrop/>
-            <SelectContent>
-              <SelectDragIndicatorWrapper>
-                <SelectDragIndicator />
-              </SelectDragIndicatorWrapper>
-              <SelectItem label="Monthly" value="monthly" />
-              <SelectItem label="Weekly" value="weekly" />
-              <SelectItem label="Today" value="today" />
-            </SelectContent>
-          </SelectPortal>
-        </Select>
       </View>
-      <Calendar
-        style={styles.calendarStyle}
-        onDayPress={(day: { dateString: SetStateAction<string>; }) => {
-        setSelected(day.dateString);
-      }}
-      markedDates={{
-        [selected]: {selected: true, disableTouchEvent: true, selectedDotColor: 'orange'}
-      }}
-    />
-    <View>
-      <Text style={styles.GroupSessionHeading}>Your Group Sessions</Text>
     </View>
-    <View>
-      <Text style= {styles.ToJoinHeading}>Available To Join</Text>
-    </View>
-    </ScrollView>
-    </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    flex: 1
+    flex: 1,
   },
-
+  selectWrapper: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginHorizontal: 25,
+    top: 20,
+  },
   calendarStyle: {
-    margin: 50,
+    margin: 35,
     borderWidth: 5,
-    borderColor: '#C2C2C2',
+    borderColor: "#C2C2C2",
     borderRadius: 15,
-    fontFamily: 'Roboto',
     marginBottom: 30,
   },
-  
-  createButton: {
-    backgroundColor: '#077AFF',
-    width: 100,
-    height: 35,
-    borderRadius: 4,
-    justifyContent: 'center', 
-    alignItems: 'center',
-  },
-
-  createButtonText: {
-    color: "white",
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
-    fontSize: 12,
-    textAlign: 'center'
-  },
-
   GroupSessionHeading: {
-    color: '#05405D',
-    alignSelf: 'center',
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
-    fontSize: 20,
+    color: "#05405D",
+    alignSelf: "center",
+    fontWeight: "bold",
+    fontSize: 24,
     marginBottom: 10,
   },
-
   ToJoinHeading: {
-    color: '#05405D',
+    color: "#05405D",
+    alignSelf: "center",
+    fontWeight: "bold",
+    fontSize: 24,
+    marginTop: 15,
+    marginVertical: 10,
+  },
+  floatingButton: {
+    position: "absolute",
+    width: 60,
+    height: 60,
+    backgroundColor: "#077AFF",
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    bottom: 30,
+    right: 30,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  floatingButtonText: {
+    color: "#FFF",
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  noTasksContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 20,
+  },
+  noTaskText: {
+    fontSize: 16,
+    color: "gray",
+  },
+  tasksWrapper: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  taskContainer: {
+    padding: 15,
+    backgroundColor: "#088DCD",
+    marginVertical: 5,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+    borderWidth: 2, // Add border width
+    borderColor: "#C2C2C2", // Add border color
+  },
+  sessionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
+  },
+  sessionDetails: {
+    fontSize: 14,
+    color: "white",
+    marginTop: 5,
+  },
+  taskContainer2: {
+    padding: 15,
+    backgroundColor: "#A2DDFA",
+    marginVertical: 5,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 2,
+    borderWidth: 2, // Add border width
+    borderColor: "#C2C2C2", // Add border color
+  },
+  sessionTitle2: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#1F1F1F",
+  },
+  sessionDetails2: {
+    fontSize: 14,
+    color: "#1F1F1F",
+    marginTop: 5,
+  },
+  markedDateContainer: {
+    container: {
+      backgroundColor: '#A2DDFA',
+      borderRadius: 5,
+    },
+    text: {
+      color: '#000',
+    },
+  },
+  JoinedDateContainer: {
+    container: {
+      backgroundColor: '#088DCD',
+      borderRadius: 5,
+    }
+  },
+  dailyView: {
+    flex: 1, // Take up remaining space
+    padding: 10,
+    backgroundColor: "#f9f9f9",
+    marginHorizontal: 25,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    marginVertical: 40,
+    paddingBottom: 150,
+    paddingTop: 25,
+  },
+  dailyHeading: {
     alignSelf: 'center',
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
     fontSize: 20,
+    fontWeight: "bold",
+    color: "#05405D",
     marginBottom: 10,
-  }
+  },
+  dailyTaskContainer: {
+    backgroundColor: "#E8F5FE",
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#BCE0FD",
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  dailyTaskTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#1F1F1F",
+  },
+  dailyTaskDetails: {
+    fontSize: 14,
+    color: "#4F4F4F",
+    marginTop: 5,
+  },
+  noDailyTasksText: {
+    fontSize: 16,
+    color: "gray",
+    textAlign: "center",
+    marginTop: 20,
+  },
 });
