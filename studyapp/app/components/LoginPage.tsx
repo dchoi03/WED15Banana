@@ -17,6 +17,7 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  
   return (
     <View style={styles.container}>
       <Image

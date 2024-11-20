@@ -101,7 +101,7 @@ export default function ProfilePage() {
   }, [navigation, isDarkMode]);  
 
   return (
-    <ScrollView style={{ backgroundColor: 'white' }}>
+  <ScrollView style={[styles.scrollview, isDarkMode && styles.darkContainer]}>
 <GluestackUIProvider mode={colorMode} >
     <ThemedView  style={[styles.container, isDarkMode && styles.darkContainer]}>
       <ThemedView style={[styles.padder, isDarkMode && styles.darkContainer ]}/>
@@ -233,10 +233,7 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
   }, 
-  relativeButton: {
-      position: "absolute",
-      width: 30,
-      height: 30,
-      marginLeft: 350,
-  } 
+  scrollview: {
+    backgroundColor: "white"
+  }
 });

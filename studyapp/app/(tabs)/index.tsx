@@ -58,22 +58,6 @@ export default function HomeScreen() {
   const [currentScreen, setCurrentScreen] = useState<"landing" | "login" | "signup">("landing");
 
   useEffect(() => {
-    const saveDetails = async () => {
-      await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify([
-        { id: '1', title: "Username", content: "George" },
-        { id: '2', title: "name", content: "Gerorge pollix" },
-        { id: '3', title: "education", content: "Unspecified" },
-        { id: '4', title: "University", content: "Unspecified" },
-        { id: '5', title: "Grade", content: "Unspecified"} ,
-        { id: '6', title: "Current Courses", content: "Unspecified" },
-        { id: '7', title: "Goals", content: "Unspecified" },
-        { id: '8', title: "Contact", content: "000 0000 0000" },
-        { id: '9', title: "Email", content: "Fiaoesfe@gasem.com" },
-        { id: '10', title: "Bio", content: "Hi, Im new to StuddyBud. Its nice to meet you!" },
-        { id: '11', title: "ProfilePic", content: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6LXNJFTmLzCoExghcATlCWG85kI8dsnhJng&s" },
-      ]))
-    }
-    saveDetails();
     const saveBuddyList = async () => {
       await AsyncStorage.setItem(BUDDY_LIST, JSON.stringify([
           [
