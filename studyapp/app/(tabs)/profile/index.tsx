@@ -89,19 +89,19 @@ export default function ProfilePage() {
     navigation.setOptions({
       headerRight: () => (
         <Button
-        style= {{ backgroundColor: { isDarkMode === 'light' ? 'black' : ' white' } }}
-        onPress={() => {
-          setPageColours();
-        }}
-      >
-        <ButtonIcon as={SunIcon}></ButtonIcon>
-      </Button>
+          style={{ backgroundColor: '#007AFF' }}
+          onPress={() => {
+            setPageColours();
+          }}
+        >
+          <ButtonIcon as={SunIcon}></ButtonIcon>
+        </Button>
       ),
     });
-  }, [navigation, isDarkMode]);
+  }, [navigation, isDarkMode]);  
 
   return (
-    // <ScrollView style={{ backgroundColor: 'white' }}>
+    <ScrollView style={{ backgroundColor: 'white' }}>
 <GluestackUIProvider mode={colorMode} >
     <ThemedView  style={[styles.container, isDarkMode && styles.darkContainer]}>
       <ThemedView style={[styles.padder, isDarkMode && styles.darkContainer ]}/>
@@ -132,16 +132,18 @@ export default function ProfilePage() {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.listItem}>
-              <Text style={[styles.listTitle, isDarkMode && styles.darkText]}>{item.title}</Text>
-              <Text style={isDarkMode ? styles.darkText : undefined}>{item.content}</Text>
+                <Text style={[styles.listTitle, isDarkMode && styles.darkText]}>{item.title}</Text>
+                <Text style={isDarkMode ? styles.darkText : undefined}>{item.content}</Text>
               </View>
             )}
+            scrollEnabled={false} // Prevent FlatList from scrolling
+            ListFooterComponent={<View style={{ height: 20 }} />} // Optional: Add spacing at the bottom
           />
         </ThemedView>
         </ThemedView>
     </ThemedView>
     </GluestackUIProvider>
-    // </ScrollView>
+    </ScrollView>
   );
 }
 
