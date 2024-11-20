@@ -21,6 +21,8 @@ import { useState, useEffect } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as ImagePicker from "expo-image-picker";
+import Toast from "react-native-toast-message";
+
 
 const PROFILE_KEY = "@profile"
 
@@ -103,20 +105,27 @@ useEffect(() => {
   }, [profile, profilePic]);
 
   const saveUpdates = async () => {
-      await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify([ 
-        { id: '1', title: "Username", content: username},
+      await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify([
+        { id: '1', title: "Username", content: username },
         { id: '2', title: "name", content: name },
         { id: '3', title: "education", content: education },
         { id: '4', title: "University", content: university },
-        { id: '5', title: "Grade", content: grade} ,
+        { id: '5', title: "Grade", content: grade },
         { id: '6', title: "Current Courses", content: currentCourses },
         { id: '7', title: "Goals", content: goals },
         { id: '8', title: "Contact", content: contact },
-        { id: '9', title: "Email", content: email},
+        { id: '9', title: "Email", content: email },
         { id: '10', title: "Bio", content: bio },
         { id: '11', title: "ProfilePic", content: profilePic },
-      ]))
-  }
+      ]));
+
+      // Show success toast
+      Toast.show({
+        type: 'success',
+        text1: 'Profile Updated',
+        text2: 'Your changes have been saved successfully!',
+      });
+  };
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -127,11 +136,10 @@ useEffect(() => {
     }
   };
 return (
-
+  <ScrollView
+  style={styles.scrollView}
+  >
   <ThemedView style={styles.container}>
-            <ScrollView
-            style={styles.scrollView}
-            >
           <ThemedView style={styles.padder}/>
             <ThemedView style={styles.subContainer}>
               
@@ -141,7 +149,8 @@ return (
                   <AvatarImage source={{ uri: profilePic }} />
                 </Avatar>
                   <Pressable onPress={() => pickImage()}>
-                  <ThemedText>Add/Edit your Profile Pic</ThemedText>
+                  <ThemedText
+                  style={{ color: '#007AFF' }}>Add/Edit your Profile Pic</ThemedText>
                 </Pressable>
               </ThemedView>
 
@@ -270,12 +279,10 @@ return (
               <ButtonText>Save Changes</ButtonText>
               </Button>
             </ButtonGroup>
-
+            <Toast/>
             </ThemedView>
-            
-        </ScrollView>
         </ThemedView>
-
+        </ScrollView>
       );
 
 }
@@ -283,7 +290,6 @@ return (
 const styles = StyleSheet.create({
     titleContainer: {
       flexDirection: 'row',
-      alignItems: 'center',
       gap: 8,
     },
     detailsContainer: {
@@ -291,23 +297,18 @@ const styles = StyleSheet.create({
     },
     detailsTitleContainer: {
       alignItems: 'center',
-      height: 40,
+      height: 30,
       marginBottom: 10,
     },
     detailsTitle: {
       fontWeight: "bold",
     },
-    reactLogo: {
-      height: 178,
-      width: 290,
-      bottom: 0,
-      left: 0,
-      position: 'absolute',
-    },
+
     container: {
       flex: 1,
       flexDirection: "column",
       justifyContent: "flex-start",
+      margin: 15
     },
     padder: {
       height: 20,
@@ -319,18 +320,21 @@ const styles = StyleSheet.create({
     },
     yourProfile: {
       fontSize: 20,
-      color: "#007AFF",
+      color: "#1F1F1F",
       fontWeight: "bold",
       marginBottom: 30,
     }, 
     nameText: {
       fontWeight: "bold", 
       width: 80,
-      marginRight: 10
+      marginRight: 10,
+      color:'#1F1F1F'
     },
     button: {
       backgroundColor: "#007AFF",
       color: "#007AFF",
+      marginBottom: 20,
+      marginTop: 20,
     },
     listItem: {
       flexDirection: "row",
@@ -344,19 +348,20 @@ const styles = StyleSheet.create({
       flexDirection: "row",
       alignItems: "center",
       marginBottom: 20,
+      gap: 10
     }, 
     bioBox: {
       flexDirection: "column",
       alignItems: "center",
-      width: 250,
+      width: 300,
       marginTop:20,
-      marginBottom:20,
+      marginBottom:10,
     },
     userNameBox: {
-      flexDirection: "column",
+      flexDirection: "row",
       alignItems: "center",
-      marginTop:20,
     },
+
     scrollView: {
       flexGrow: 1,
       backgroundColor: "white",

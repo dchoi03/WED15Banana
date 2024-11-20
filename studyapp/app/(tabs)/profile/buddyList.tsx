@@ -73,33 +73,46 @@ export default function BuddyList() {
   const renderItem = ({ item }: { item: ProfileObject[] }) => {
     const username = item.find((obj) => obj.title === 'Username')?.content || '';
     const avatar = item.find((obj) => obj.title === 'ProfilePic')?.content || '';
-
+  
     return (
       <GluestackUIProvider mode={colorMode}>
-      <View style={styles.itemBox}>
-      <Pressable onPress={() => {
-          const profile = JSON.stringify(item);
-          navigation.navigate("userProfile", { profile })
-        }
-      }>
-        <View style={styles.listItem}>
-        <Avatar size="lg">
-          <AvatarFallbackText />
-          <AvatarImage     
-          source={{
-            uri: avatar
-          }}/>
-      </Avatar>
-      <Text style={styles.listTitle}>{username}</Text>
-      <Button style={styles.button} action="negative" onPress={() => {unBuddy(username)}}>
-          <ButtonText>UnBuddy</ButtonText>
-      </Button >
-      </View>
-    </Pressable>
-    </View>
-    </GluestackUIProvider>
-    )
-  }
+        <View style={styles.itemBox}>
+          <Pressable
+            onPress={() => {
+              const profile = JSON.stringify(item);
+              navigation.navigate("userProfile", { profile });
+            }}
+          >
+            <View style={styles.listItem}>
+              {/* Avatar and Username on the left */}
+              <View style={{ flexDirection: "row", alignItems: "center", flexGrow: 1 }}>
+                <Avatar size="lg">
+                  <AvatarFallbackText />
+                  <AvatarImage
+                    source={{
+                      uri: avatar,
+                    }}
+                  />
+                </Avatar>
+                <Text style={styles.listTitle}>{username}</Text>
+              </View>
+  
+              {/* UnBuddy Button on the right */}
+              <Button
+                style={styles.button}
+                action="negative"
+                onPress={() => {
+                  unBuddy(username);
+                }}
+              >
+                <ButtonText>UnBuddy</ButtonText>
+              </Button>
+            </View>
+          </Pressable>
+        </View>
+      </GluestackUIProvider>
+    );
+  };  
 
   return (
     <ThemedView style={styles.container}>
@@ -121,11 +134,6 @@ export default function BuddyList() {
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
   container: {
     flex: 1,
     flexDirection: "column",
@@ -133,34 +141,28 @@ const styles = StyleSheet.create({
   },
   subContainer: {
     flex: 1,
-    marginLeft: 40,
-
-  },
-  nameText: {
-    fontWeight: "bold", 
-    paddingBottom: 20
-  },
-  button: {
-    backgroundColor: "#007AFF",
-    color: "#007AFF",
+    marginHorizontal: 15
   },
   listItem: {
     flexDirection: "row",
-    justifyContent: "space-between",
     marginVertical: 20,
     alignItems: "center",
+    justifyContent: "space-between", 
+    width: "100%",
   },
   listTitle: {
-    width: 100,
+    marginLeft: 10,
     fontWeight: "bold",
-    paddingBottom: 10,
+    fontSize: 16,
+    color: "#333",
   },
-  bioText: {
-    width: 250,
-    marginBottom: 20
+  button: {
+    backgroundColor: "#007AFF",
+    color: "#FFF",
   },
   itemBox: {
-    width: 350
+    width: "90%", 
+    alignSelf: "center", 
   },
   noBuddyText: {
     fontSize: 20,
@@ -170,6 +172,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     alignItems: "center",
     marginTop: 40,
-  }
+  },
 });
 
