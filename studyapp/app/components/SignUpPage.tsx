@@ -24,7 +24,7 @@ const SignUpPage: React.FC = () => {
       { id: '7', title: "Goals", content: "Unspecified" },
       { id: '8', title: "Contact", content: phone },
       { id: '9', title: "Email", content: email },
-      { id: '10', title: "Bio", content: "Unspecified" },
+      { id: '10', title: "Bio", content: "Hi, I'm new to this StudyBuddy. Its nice to meet you!" },
       { id: '11', title: "ProfilePic", content: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6LXNJFTmLzCoExghcATlCWG85kI8dsnhJng&s" },
     ]));
   };
