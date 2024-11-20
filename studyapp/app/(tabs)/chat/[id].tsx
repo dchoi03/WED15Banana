@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         alignItems: 'center',
         padding: 10,
+        paddingTop: 40,
 
     },
     container: {

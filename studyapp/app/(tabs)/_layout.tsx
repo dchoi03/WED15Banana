@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tabs, Stack } from 'expo-router';
 import Feather from "@expo/vector-icons/Feather";
+import Entypo from '@expo/vector-icons/Entypo';
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -29,7 +30,7 @@ export default function TabLayout() {
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-          headerShown: false, 
+          headerShown: false,
         }}
       >
         <Tabs.Screen
@@ -62,7 +63,7 @@ export default function TabLayout() {
           options={{
             title: "Chat",
             tabBarIcon: ({ color, focused }) => (
-                <Search size={24} color={color} />
+                <Entypo name="chat" size={24} color={color} />
               ),
           }}
         />
