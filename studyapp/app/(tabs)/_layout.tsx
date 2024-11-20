@@ -1,36 +1,49 @@
-import { Tabs } from "expo-router";
-import React from "react";
-
+import React from 'react';
+import { Tabs, Stack } from 'expo-router';
 import Feather from "@expo/vector-icons/Feather";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Users, Search } from "lucide-react-native";
 import Toast from "react-native-toast-message";
+import { useAuth } from "../context/AuthContext";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return (
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="(auth)/landing" />
+      </Stack>
+    );
+  }
 
   return (
     <>
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-          headerShown: false,
+          headerShown: false, 
         }}
       >
         <Tabs.Screen
           name="index"
           options={{
             title: "Matcher",
-            tabBarIcon: ({ color, focused }) => <Users color={color} />,
+            tabBarIcon: ({ color }) => <Users color={color} />,
           }}
         />
         <Tabs.Screen
           name="search"
           options={{
             title: "Search",
-            tabBarIcon: ({ color, focused }) => (
+            tabBarIcon: ({ color }) => (
               <Search size={24} color={color} />
             ),
           }}
@@ -48,11 +61,8 @@ export default function TabLayout() {
           name="profile"
           options={{
             title: "Profile",
-            tabBarIcon: ({ color, focused }) => (
-              <TabBarIcon
-                name={focused ? "code-slash" : "code-slash-outline"}
-                color={color}
-              />
+            tabBarIcon: ({ color, size }) => (
+              <Feather name="user" size={size} color={color} />
             ),
           }}
         />
