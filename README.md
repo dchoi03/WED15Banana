@@ -45,6 +45,7 @@ Create or join group events. A calendar will reveal sessions you are planning to
 - Leave joined sessions
 - View your sessions update on the calendar
 - Filter the calendar by "monthly" or "daily"
+- Text to speech for the session description
 
 ### Message Tab
 
