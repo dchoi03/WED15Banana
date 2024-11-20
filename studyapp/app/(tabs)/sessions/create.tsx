@@ -100,19 +100,8 @@ export default function CreateSessionScreen() {
       <Text style={styles.label}>Date</Text>
         <VStack space="md">
         <View style={{flexDirection: "row"}}>
-          {/* <Input style={{ height: 45 }}>
-            <TouchableOpacity 
-              onPress={() => setShowDatePicker(true)} 
-              style={styles.datePickerTouchable}
-            >
-              <Text style={styles.dateText}>
-                {date.toDateString()}
-              </Text>
-            </TouchableOpacity>
-          </Input> */}
-          
             <DateTimePicker 
-            style={{ backgroundColor: 'white', marginLeft: 10 }}
+            style={{ backgroundColor: 'white' }}
               value={date}
               mode="date"
               display="default"
@@ -125,24 +114,12 @@ export default function CreateSessionScreen() {
       <Text style={styles.label}>Time</Text>
         <VStack space="md">
         <View style={{flexDirection: "row"}}>
-          <Input style={{ height: 45 }}>
-            <TouchableOpacity 
-              onPress={() => setShowTimePicker(true)} 
-              style={styles.datePickerTouchable}
-            >
-              <Text style={styles.dateText}>
-                {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </Text>
-            </TouchableOpacity>
-          </Input>
-          {showTimePicker && (
             <DateTimePicker 
               value={time}
               mode="time"
               display="default"
               onChange={onTimeChange}
             />
-          )}
         </View>
         </VStack>
       </View>

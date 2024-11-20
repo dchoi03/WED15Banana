@@ -42,6 +42,19 @@ export default function SessionsScreen() {
         { memberName: "Bob2", profilePicture: "..." },
       ],
     },
+    {
+      name: "Java Help Session",
+      date: "2024-12-04",
+      time: "2024-12-03T00:00:00.000Z",
+      location: "UNSW Law Library",
+      description: "Get help with Java assignments",
+      members: 5,
+      isJoined: false,
+      membersInfo: [
+        { memberName: "Bob", profilePicture: "..." },
+        { memberName: "Bob2", profilePicture: "..." },
+      ],
+    },
   ]);
 
   const [viewType, setViewType] = useState("monthly");
@@ -49,15 +62,14 @@ export default function SessionsScreen() {
   const [markedDates, setMarkedDates] = useState({
     '2024-12-03': { customStyles: styles.markedDateContainer },
   });
-  const { name, date, time, location, description, members, isJoined, membersInfo, idx } = useLocalSearchParams();
+  const { name, date, time, location, description, members, isJoined, membersInfo, idx, updated } = useLocalSearchParams();
 
   const dailySessions = sessions.filter(
     (session) => session.date === selectedDate
   );
   
   // Load sessions and marked dates from AsyncStorage on mount
-  useFocusEffect(
-    React.useCallback(() => {
+  useEffect(() => {
     const loadSessions = async () => {
       const storedSessions = await AsyncStorage.getItem(SESSIONS_STORE_KEY);
       if (storedSessions) {
@@ -77,7 +89,17 @@ export default function SessionsScreen() {
       }
     };
     loadSessions();
-  }, []));
+  }, []);
+
+  useEffect(() => {
+    if (updated) {
+      const getSessions = async () => {
+        const storedSessions = await AsyncStorage.getItem(SESSIONS_STORE_KEY);
+        storedSessions && setSessions(JSON.parse(storedSessions));
+      };
+      getSessions();
+    }
+  }, [updated]);
 
   // Save sessions to AsyncStorage whenever they change
   useEffect(() => {
