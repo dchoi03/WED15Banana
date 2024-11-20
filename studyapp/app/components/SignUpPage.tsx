@@ -16,16 +16,16 @@ const SignUpPage: React.FC = () => {
   const saveDetails = async () => {
     await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify([
       { id: '1', title: "Username", content: name },
-      { id: '2', title: "name", content: "" },
-      { id: '3', title: "education", content: "" },
-      { id: '4', title: "University", content: "" },
+      { id: '2', title: "Name", content: "Unspecified" },
+      { id: '3', title: "Education", content: "Unspecified" },
+      { id: '4', title: "University", content: "Unspecified" },
       { id: '5', title: "Grade", content: "" },
-      { id: '6', title: "Current Courses", content: "" },
-      { id: '7', title: "Goals", content: "" },
+      { id: '6', title: "Current Courses", content: "Unspecified" },
+      { id: '7', title: "Goals", content: "Unspecified" },
       { id: '8', title: "Contact", content: phone },
       { id: '9', title: "Email", content: email },
-      { id: '10', title: "Bio", content: "" },
-      { id: '11', title: "ProfilePic", content: "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg" },
+      { id: '10', title: "Bio", content: "Unspecified" },
+      { id: '11', title: "ProfilePic", content: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6LXNJFTmLzCoExghcATlCWG85kI8dsnhJng&s" },
     ]));
   };
 
