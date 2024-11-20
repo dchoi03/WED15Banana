@@ -78,7 +78,7 @@ useEffect(() => {
 
 useEffect(() => {
     for (const item of profile) {
-      if (item.title == "name") {
+      if (item.title == "Name") {
         setName(item.content);
       } else if (item.title == "Bio") {
         setBio(item.content) 
@@ -107,8 +107,8 @@ useEffect(() => {
   const saveUpdates = async () => {
       await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify([
         { id: '1', title: "Username", content: username },
-        { id: '2', title: "name", content: name },
-        { id: '3', title: "education", content: education },
+        { id: '2', title: "Name", content: name },
+        { id: '3', title: "Education", content: education },
         { id: '4', title: "University", content: university },
         { id: '5', title: "Grade", content: grade },
         { id: '6', title: "Current Courses", content: currentCourses },

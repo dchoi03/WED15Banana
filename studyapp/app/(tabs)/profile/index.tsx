@@ -89,7 +89,7 @@ export default function ProfilePage() {
     navigation.setOptions({
       headerRight: () => (
         <Button
-          style={{ backgroundColor: '#007AFF' }}
+          style={{ borderRadius: 50 , backgroundColor: '#007AFF' }}
           onPress={() => {
             setPageColours();
           }}
@@ -138,8 +138,8 @@ export default function ProfilePage() {
                 <Text style={isDarkMode ? styles.darkText : undefined}>{item.content}</Text>
               </View>
             )}
-            scrollEnabled={false} // Prevent FlatList from scrolling
-            ListFooterComponent={<View style={{ height: 20 }} />} // Optional: Add spacing at the bottom
+            scrollEnabled={false}
+            ListFooterComponent={<View style={{ height: 20 }} />} 
           />
         </ThemedView>
         </ThemedView>
