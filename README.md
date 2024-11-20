@@ -3,7 +3,7 @@
 *Aurthor: Colby Rehn*
 
 ## Getting started
-1. Change to the directory ./studybuddy
+1. Change to the directory ./studyapp
 2. Then run `npm install` in your terminal
 3. After installation, run `npx expo start`
 4. Then choose the appropriate interface you wish the app to render in. We recommend mobile as our app is designed for it.
